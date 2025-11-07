@@ -1,0 +1,122 @@
+<div class="history-container">
+  <h1>Historial de Intercambios</h1>
+
+  <div *ngIf="isLoading" class="message">Cargando historial...</div>
+  <div *ngIf="error && !isLoading" class="message error">{{ error }}</div>
+  <div *ngIf="!isLoading && exchanges.length === 0 && !error" class="empty-state"><p>Aún no has realizado ningún intercambio.</p></div>
+
+  <div *ngIf="!isLoading && exchanges.length > 0" class="history-list">
+    <div *ngFor="let ex of exchanges" class="history-item"> 
+      <div class="item-details">
+        <!-- Ajusta estos nombres si es necesario según tu API -->
+        <p><strong>Libro Deseado:</strong> {{ ex.libro_deseado?.titulo || ex.libro_solicitado || 'N/A' }}</p>
+        <p><strong>Libro Ofrecido:</strong> {{ ex.libro_ofrecido?.titulo || 'N/A' }}</p>
+        <p><strong>Otro Usuario:</strong> 
+           <!-- Ajusta estos nombres si es necesario según tu API -->
+           {{ currentUser?.nombre_usuario === ex.solicitante ? ex.ofreciente : ex.solicitante || 'N/A' }}
+        </p>
+        <p><strong>Fecha:</strong> {{ ex.fecha_intercambio | date:'mediumDate' }}</p>
+        <p><strong>Estado:</strong> <span class="status status-{{ex.estado?.toLowerCase()}}">{{ ex.estado }}</span></p>
+      </div> 
+      <div class="item-actions">
+        <!-- Botón Generar Código -->
+        <button 
+          *ngIf="ex.estado === 'Aceptado' && canGenerateCode(ex)" 
+          class="btn btn-generate-code" 
+          (click)="openGenerateCodeModal(ex)" 
+          [disabled]="isGeneratingCode">
+            {{ isGeneratingCode ? 'Generando...' : 'Generar Código' }}
+        </button>
+        <!-- Botón Completar -->
+        <button 
+          *ngIf="ex.estado === 'Aceptado' && canCompleteExchange(ex)" 
+          class="btn btn-complete" 
+          (click)="openCompleteModal(ex)"> 
+           Completar Intercambio
+        </button>
+        <!-- Botón Calificar -->
+        <button 
+          *ngIf="ex.estado === 'Completado' && !ex.yaCalificado" 
+          class="btn btn-rate" 
+          (click)="openRatingModal(ex)">
+          Calificar
+        </button>
+        <span *ngIf="ex.estado === 'Completado' && ex.yaCalificado" class="rated-message">Ya calificado ✔️</span>
+        <a *ngIf="ex.conversacion_id" [routerLink]="['/chat', ex.conversacion_id]" class="btn btn-chat">Ver Chat</a>
+      </div> 
+    </div> 
+  </div> 
+</div> 
+
+<!-- ======================= -->
+<!-- MODAL DE CALIFICACIÓN   -->
+<!-- ======================= -->
+<div class="modal-overlay" *ngIf="showRatingModal">
+  <div class="modal-content rating-modal">
+    <h3>Calificar Intercambio</h3>
+    <p>Califica tu experiencia con el otro usuario en el intercambio por 
+       <strong>"{{ exchangeToRate?.libro_deseado?.titulo || exchangeToRate?.libro_solicitado }}"</strong>.</p>
+    <div class="rating-stars">
+      <span *ngFor="let star of [1, 2, 3, 4, 5]" 
+            class="star" [class.filled]="star <= ratingData.puntuacion"
+            (click)="setRating(star)">★</span>
+    </div>
+    <div class="form-group">
+      <label for="comentario">Comentario (opcional):</label>
+      <textarea id="comentario" name="comentario" rows="3" [(ngModel)]="ratingData.comentario"></textarea>
+    </div>
+    <div *ngIf="ratingError" class="message error modal-error">{{ ratingError }}</div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="closeRatingModal()" [disabled]="isSubmittingRating">Cancelar</button>
+      <button class="btn btn-primary" (click)="submitRating()" [disabled]="isSubmittingRating">
+        {{ isSubmittingRating ? 'Enviando...' : 'Enviar Calificación' }}
+      </button>
+    </div>
+  </div> 
+</div> 
+
+<!-- ============================== -->
+<!-- MODAL CÓDIGO GENERADO          -->
+<!-- ============================== -->
+<div class="modal-overlay" *ngIf="showGeneratedCodeModal">
+  <div class="modal-content generated-code-modal">
+    <h3>Código de Confirmación</h3>
+    <p>Comparte este código con el otro usuario:</p>
+    <div class="generated-code">{{ generatedCodeData?.codigo }}</div>
+    <p class="expiry-info" *ngIf="generatedCodeData?.expira_en">
+      Expira el: {{ generatedCodeData?.expira_en | date:'medium' }}
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="closeGeneratedCodeModal()">Cerrar</button> 
+    </div>
+  </div> 
+</div> 
+
+<!-- ============================== -->
+<!-- MODAL COMPLETAR CON CÓDIGO    -->
+<!-- ============================== -->
+<div class="modal-overlay" *ngIf="showCompleteModal">
+  <div class="modal-content complete-modal">
+    <h3>Completar Intercambio</h3>
+    <p>Ingresa el código que te proporcionó el otro usuario:</p>
+    <div class="form-group">
+      <label for="completionCode">Código de Confirmación:</label>
+      <input type="text" id="completionCode" name="completionCode" [(ngModel)]="completionCode" 
+             maxlength="12" placeholder="ABCXYZ" class="code-input">
+    </div>
+    <div *ngIf="completionError" class="message error modal-error">{{ completionError }}</div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="closeCompleteModal()" [disabled]="isCompleting">Cancelar</button>
+      <button class="btn btn-primary" (click)="submitCompletionCode()" [disabled]="isCompleting || !completionCode.trim()">
+        {{ isCompleting ? 'Confirmando...' : 'Confirmar' }}
+      </button>
+    </div>
+  </div> 
+</div>
+
+<app-notification 
+  *ngIf="notificationMessage" 
+  [message]="notificationMessage" 
+  [type]="notificationType" 
+  (close)="clearNotification()"> 
+</app-notification>

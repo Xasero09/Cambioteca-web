@@ -1,0 +1,5 @@
+<!-- Aplica la clase dinámica y cierra al hacer clic -->
+<div [class]="notificationClass" (click)="closeNotification()">
+  <span class="message">{{ message }}</span>
+  <button class="close-btn">&times;</button> <!-- Botón de cierre (X) -->
+</div>

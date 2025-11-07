@@ -1,0 +1,96 @@
+/* ============================================
+  PALETA DE COLORES GLOBAL (Basada en tu App)
+  ============================================
+*/
+:root {
+  /* --- Color Primario (Acento) --- */
+  /* Extraído del email y botones (tono terracota/café) */
+  --color-primary: #aa9797; 
+  --color-primary-hover: #9a8787;
+  --color-primary-light: #f5f3f3; /* Para fondos sutiles */
+  --color-primary-contrast: #ffffff; /* Texto sobre el color primario */
+
+  /* --- Colores de Fondo --- */
+  --color-background: #ffffff; /* Fondo principal blanco */
+  --color-panel-bg: #f8f9fa;   /* Fondo para paneles (buscador, tarjetas) */
+
+  /* --- Colores de Texto --- */
+  --color-text-default: #2c3e50; /* Texto principal (azul oscuro/gris) */
+  --color-text-medium: #555;    /* Texto secundario (gris) */
+  --color-text-light: #95a5a6;   /* Texto de copyright, etc. */
+  --color-text-on-primary: #ffffff; /* Texto sobre botones primarios */
+  
+  /* --- Colores de Footer --- */
+  --color-footer-bg: #2c3e50;
+  --color-footer-text: #ecf0f1;
+  --color-footer-border: #aa9797; /* <-- ¡AQUÍ ESTÁ EL COLOR TERRRACOTA! */
+
+  /* --- Colores de Estado --- */
+  --color-success: #28a745;
+  --color-error: #dc3545;
+  --color-warning: #ffc107;
+
+  /* --- Bordes y Sombras --- */
+  --color-border-light: #e0e0e0;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+}
+
+/* --- Estilos Globales --- */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text-default);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--color-text-default);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* Estilo de botones global (reutilizable) */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.btn-secondary:hover {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  transform: translateY(-2px);
+}

@@ -1,0 +1,30 @@
+<div class="chat-list-container">
+  <h1>Mis Mensajes</h1>
+
+  <div *ngIf="isLoading" class="message">Cargando conversaciones...</div>
+  <div *ngIf="error" class="message error">{{ error }}</div>
+
+  <div *ngIf="!isLoading && conversations.length === 0 && !error" class="empty-state">
+    <p>No tienes conversaciones activas.</p>
+  </div>
+
+  <div *ngIf="!isLoading && conversations.length > 0" class="conversations">
+    <a *ngFor="let conv of conversations" 
+       [routerLink]="['/chat', conv.id_conversacion]" 
+       [state]="{ title: getDisplayTitle(conv) }"  
+       class="conversation-item">
+      
+      <img [src]="getOtherUserAvatar(conv)" alt="Avatar" class="avatar">
+      
+      <div class="conv-details">
+        <div class="conv-header">
+          <span class="conv-title">{{ getDisplayTitle(conv) }}</span>
+          <span class="conv-date">{{ conv.ultimo_enviado_en | date:'shortTime' }}</span>
+        </div>
+        <p class="last-message">{{ conv.ultimo_mensaje || 'Inicia la conversación' }}</p>
+      </div>
+      
+      <span *ngIf="conv.unread_count > 0" class="unread-badge">{{ conv.unread_count }}</span>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,202 @@
+<div class="proposals-container">
+  <h1>Mis Propuestas</h1>
+  
+  <div class="tabs">
+    <button class="tab-button" [class.active]="currentTab === 'recibidas'" (click)="currentTab = 'recibidas'">
+      Recibidas
+      <span *ngIf="recibidas.length > 0" class="count-badge">{{ recibidas.length }}</span>
+    </button>
+    <button class="tab-button" [class.active]="currentTab === 'enviadas'" (click)="currentTab = 'enviadas'">
+      Enviadas
+      <span *ngIf="enviadas.length > 0" class="count-badge">{{ enviadas.length }}</span>
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="message">Cargando propuestas...</div>
+  <div *ngIf="error && !isLoading" class="message error">{{ error }}</div> 
+
+  <div *ngIf="!isLoading && currentTab === 'recibidas'">
+    <div *ngIf="recibidas.length === 0 && !error" class="empty-state">
+      <p>No tienes propuestas recibidas.</p>
+    </div>
+
+    <div *ngIf="recibidas.length > 0" class="proposals-list">
+      <div *ngFor="let proposal of recibidas" class="proposal-item">
+        <div class="item-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="currentColor"><path d="M0 48C0 21.5 21.5 0 48 0H336c26.5 0 48 21.5 48 48V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V48zM80 64h80v80l-40-20-40 20V64zm112 0h80v80l-40-20-40 20V64zM80 208h80v80l-40-20-40 20v-80zm112 0h80v80l-40-20-40 20v-80zM80 352h80v80l-40-20-40 20v-80zm112 0h80v80l-40-20-40 20v-80z"/></svg> 
+        </div>
+        <div class="item-content">
+          <h3>Libro Solicitado: {{ proposal.libro_deseado?.titulo || 'N/A' }}</h3>
+          <p class="subtitle">De: {{ getCounterpartyName(proposal, 'recibidas') }}</p>
+          <div class="meta">
+            <span class="status-chip {{ getStatusColor(proposal.estado) }}">{{ proposal.estado }}</span>
+            <span class="offer-count" *ngIf="getOfferCount(proposal) > 0">{{ getOfferCount(proposal) }} oferta(s)</span>
+            <span class="date">{{ proposal.actualizada_en || proposal.creada_en | date:'short' }}</span>
+          </div>
+        </div>
+        
+        <div class="item-actions">
+          <ng-container *ngIf="isPending(proposal)">
+            <button *ngIf="canAcceptSingleOffer(proposal)" class="btn btn-accept" (click)="acceptSingleOffer(proposal)" [disabled]="isProcessingAction && selectedProposalForAction?.id_solicitud === proposal.id_solicitud">
+              {{ (isProcessingAction && selectedProposalForAction?.id_solicitud === proposal.id_solicitud) ? '...' : 'Aceptar' }}
+            </button>
+            <button class="btn btn-view-details" (click)="goToDetail(proposal.id_solicitud)">
+              {{ canAcceptSingleOffer(proposal) ? 'Ver Detalle' : 'Ver y Elegir Oferta' }}
+            </button>
+            <button class="btn btn-reject" (click)="reject(proposal)" [disabled]="isProcessingAction && selectedProposalForAction?.id_solicitud === proposal.id_solicitud">
+              Rechazar
+            </button>
+          </ng-container>
+          
+          <ng-container *ngIf="proposal.estado === 'Aceptada'">
+            <button class="btn btn-generate-code" (click)="openGenerateCodeModal(proposal)">
+              Generar Código
+            </button>
+            <a *ngIf="proposal.conversacion_id" [routerLink]="['/chat', proposal.conversacion_id]" class="btn btn-chat">Ir al Chat</a>
+          </ng-container>
+
+          <ng-container *ngIf="isCompleted(proposal)">
+            <button *ngIf="canRate(proposal)" class="btn btn-rate" (click)="openRatingModal(proposal)">
+                Calificar Usuario
+            </button>
+            <span *ngIf="hasRated(proposal)" class="status-info rated">
+                Ya calificado ✔️
+            </span>
+          </ng-container>
+          <span *ngIf="proposal.estado === 'Rechazada' || proposal.estado === 'Cancelada'" class="status-info">
+            {{ proposal.estado }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && currentTab === 'enviadas'">
+    <div *ngIf="enviadas.length === 0 && !error" class="empty-state">
+      <p>No has enviado ninguna propuesta.</p>
+    </div>
+
+    <div *ngIf="enviadas.length > 0" class="proposals-list">
+      <div *ngFor="let proposal of enviadas" class="proposal-item">
+        <div class="item-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="currentColor"><path d="M0 48C0 21.5 21.5 0 48 0H336c26.5 0 48 21.5 48 48V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V48zM80 64h80v80l-40-20-40 20V64zm112 0h80v80l-40-20-40 20V64zM80 208h80v80l-40-20-40 20v-80zm112 0h80v80l-40-20-40 20v-80zM80 352h80v80l-40-20-40 20v-80zm112 0h80v80l-40-20-40 20v-80z"/></svg> 
+        </div>
+        <div class="item-content">
+          <h3>Libro Solicitado: {{ proposal.libro_deseado?.titulo || 'N/A' }}</h3>
+          <p class="subtitle">Para: {{ getCounterpartyName(proposal, 'enviadas') }}</p>
+          <div class="meta">
+            <span class="status-chip {{ getStatusColor(proposal.estado) }}">{{ proposal.estado }}</span>
+            <span class="offer-count" *ngIf="getOfferCount(proposal) > 0">{{ getOfferCount(proposal) }} oferta(s)</span>
+            <span class="date">{{ proposal.actualizada_en || proposal.creada_en | date:'short' }}</span>
+          </div>
+        </div>
+        
+        <div class="item-actions">
+          <ng-container *ngIf="isPending(proposal)">
+            <button class="btn btn-reject" (click)="cancelProposal(proposal)" [disabled]="isProcessingAction && selectedProposalForAction?.id_solicitud === proposal.id_solicitud">
+              {{ (isProcessingAction && selectedProposalForAction?.id_solicitud === proposal.id_solicitud) ? '...' : 'Cancelar' }}
+            </button>
+            <button class="btn btn-view-details" (click)="goToDetail(proposal.id_solicitud)">
+              Ver Detalle
+            </button>
+          </ng-container>
+          
+          <ng-container *ngIf="proposal.estado === 'Aceptada'">
+            <button class="btn btn-complete" (click)="openCompleteModal(proposal)">
+              Completar Intercambio
+            </button>
+            <a *ngIf="proposal.conversacion_id" [routerLink]="['/chat', proposal.conversacion_id]" class="btn btn-chat">Ir al Chat</a>
+          </ng-container>
+
+          <ng-container *ngIf="isCompleted(proposal)">
+            <button *ngIf="canRate(proposal)" class="btn btn-rate" (click)="openRatingModal(proposal)">
+                Calificar Usuario
+            </button>
+            <span *ngIf="hasRated(proposal)" class="status-info rated">
+                Ya calificado ✔️
+            </span>
+          </ng-container>
+          <span *ngIf="proposal.estado === 'Rechazada' || proposal.estado === 'Cancelada'" class="status-info">
+            {{ proposal.estado }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-notification 
+  *ngIf="notificationMessage" 
+  [message]="notificationMessage" 
+  [type]="notificationType" 
+  (close)="clearNotification()"> 
+</app-notification>
+
+<div class="modal-overlay" *ngIf="showGenerateCodeModal">
+  <div class="modal-content generated-code-modal">
+    <h3>Código de Confirmación</h3>
+    <div *ngIf="isGeneratingCode" class="modal-loading">Generando código...</div>
+    <div *ngIf="generatedCodeData && !isGeneratingCode">
+      <p>Comparte este código con el otro usuario para completar el intercambio:</p>
+      <div class="generated-code">{{ generatedCodeData?.codigo }}</div>
+      <p class="expiry-info" *ngIf="generatedCodeData?.expira_en">
+        Expira el: {{ generatedCodeData?.expira_en | date:'medium' }}
+      </p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="closeGeneratedCodeModal()" [disabled]="isGeneratingCode">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showCompleteModal">
+  <div class="modal-content complete-exchange-modal">
+    <h3>Completar Intercambio</h3>
+    <p>Ingresa el código de 6 dígitos que te entregó el otro usuario.</p>
+    <div class="modal-form-group">
+      <label for="completion_code">Código de Intercambio</label>
+      <input type="text" id="completion_code" [(ngModel)]="completionCode" placeholder="ABCDEF" maxlength="12">
+      <div *ngIf="completionError" class="modal-error">{{ completionError }}</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="closeCompleteModal()" [disabled]="isCompleting">Cancelar</button>
+      <button class="btn btn-complete" (click)="submitCompletionCode()" [disabled]="isCompleting || !completionCode">
+        {{ isCompleting ? 'Confirmando...' : 'Confirmar' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showRatingModal">
+  <div class="modal-content rating-modal">
+    <h3>Calificar Intercambio</h3>
+    <p>Evalúa tu experiencia con el otro usuario para este intercambio.</p>
+    
+    <div class="modal-form-group">
+      <label>Puntuación (1 a 5 estrellas)</label>
+      <div class="rating-stars">
+        <span *ngFor="let star of [1, 2, 3, 4, 5]" 
+              [class.selected]="star <= ratingData.puntuacion"
+              (click)="ratingData.puntuacion = star">
+          ⭐
+        </span>
+      </div>
+    </div>
+
+    <div class="modal-form-group">
+      <label for="comentario_calificacion">Comentario (Opcional)</label>
+      <textarea id="comentario_calificacion" [(ngModel)]="ratingData.comentario" rows="3"></textarea>
+    </div>
+    
+    <div *ngIf="ratingError" class="modal-error">
+      {{ ratingError }}
+    </div>
+    
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="closeRatingModal()" [disabled]="isSubmittingRating">Cancelar</button>
+      <button class="btn btn-rate" (click)="submitRating()" [disabled]="isSubmittingRating">
+        {{ isSubmittingRating ? 'Enviando...' : 'Enviar Calificación' }}
+      </button>
+    </div>
+  </div>
+</div>

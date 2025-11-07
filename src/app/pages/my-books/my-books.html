@@ -1,0 +1,71 @@
+<div class="my-books-container">
+  <div class="header">
+    <h1>Mis Libros</h1>
+    <a routerLink="/libros/nuevo" class="btn btn-add">Añadir Nuevo Libro</a>
+  </div>
+
+  <div *ngIf="isLoading" class="message">Cargando tus libros...</div>
+  
+  <div *ngIf="error && !showDeleteModal" class="message error">{{ error }}</div>
+
+  <div *ngIf="!isLoading && myBooks.length === 0 && !error" class="empty-state">
+    <h2>Aún no has subido ningún libro</h2>
+    <p>¡Anímate a compartir tu primera lectura con la comunidad!</p>
+    <a routerLink="/libros/nuevo" class="btn btn-add">Subir mi primer libro</a>
+  </div>
+
+  <div *ngIf="!isLoading && myBooks.length > 0" class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Autor</th>
+          <th>Estado</th>
+          <th>Solicitudes</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let book of myBooks">
+          <td>{{ book.titulo }}</td>
+          <td>{{ book.autor }}</td>
+          <td>
+            <span class="status" [ngClass]="book.disponible ? 'available' : 'unavailable'">
+              {{ book.disponible ? 'Disponible' : 'No Disponible' }}
+            </span>
+          </td>
+          <td>
+            <span *ngIf="book.has_new_requests" class="notification">¡Nuevas!</span>
+            <span *ngIf="!book.has_new_requests" class="no-requests">Ninguna</span>
+          </td>
+          <td class="actions">
+            <a *ngIf="book.editable" [routerLink]="['/libros', book.id, 'editar']" class="btn btn-edit">Editar</a>
+            <button *ngIf="!book.editable" class="btn btn-edit" disabled title="No se puede editar (intercambio completado)">Editar</button>
+
+            <button *ngIf="book.editable" class="btn btn-delete" (click)="requestDeleteBook(book.id, book.titulo)">Eliminar</button>
+            <button *ngIf="!book.editable" class="btn btn-delete" disabled title="No se puede eliminar (intercambio completado)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showDeleteModal">
+  <div class="modal-content">
+    <h3>Confirmar Eliminación</h3>
+    <p>¿Estás seguro de que quieres eliminar el libro <strong>"{{ bookToDelete?.titulo }}"</strong>?</p>
+    <p class="warning">Esta acción no se puede deshacer.</p>
+
+    <div *ngIf="error" class="message error modal-error">{{ error }}</div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="cancelDelete()" [disabled]="isDeleting">
+        Cancelar
+      </button>
+      <button class="btn btn-delete" (click)="confirmDelete()" [disabled]="isDeleting">
+        {{ isDeleting ? 'Eliminando...' : 'Sí, eliminar' }}
+      </button>
+    </div>
+  </div>
+</div>

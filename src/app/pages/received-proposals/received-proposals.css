@@ -1,0 +1,373 @@
+.proposals-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.proposals-container h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.proposals-container .subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 25px;
+}
+
+/* --- ESTILOS PARA LAS PESTAÑAS (TABS) --- */
+.tabs {
+  display: flex;
+  gap: 10px;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 25px;
+}
+
+.tab-button {
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #888;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative; /* Para el contador */
+  top: 2px; /* Alinea con la línea inferior */
+}
+
+.tab-button.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+}
+
+.tab-button:hover {
+  color: #333;
+}
+
+.count-badge {
+  display: inline-block;
+  background-color: #007bff;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 8px;
+}
+
+.tab-button.active .count-badge {
+  background-color: #0056b3;
+}
+
+/* --- ESTILOS PARA LA LISTA DE PROPUESTAS --- */
+.proposals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.proposal-item {
+  display: flex;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  gap: 15px;
+  align-items: flex-start; /* Alinea arriba */
+  flex-wrap: wrap; /* Para que los botones bajen en móvil */
+}
+
+.item-icon {
+  flex-shrink: 0; /* Evita que se encoja */
+  width: 40px;
+  height: 40px;
+  background: #f4f5f8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #007bff;
+}
+
+.item-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.item-content {
+  flex-grow: 1; /* Ocupa el espacio disponible */
+  min-width: 200px;
+}
+
+.item-content h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.15rem;
+}
+
+.item-content .subtitle {
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0 0 10px 0;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.status-chip {
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-weight: 500;
+  background-color: #eee;
+  color: #333;
+}
+
+.status-chip.warning { background-color: #fff8e1; color: #e6a200; }
+.status-chip.primary { background-color: #e7f3ff; color: #007bff; }
+.status-chip.danger { background-color: #fdf2f2; color: #dc3545; }
+.status-chip.medium { background-color: #f8f9fa; color: #555; }
+
+.offer-count {
+  background-color: #f3f3f3;
+  padding: 4px 10px;
+  border-radius: 15px;
+}
+
+.date {
+  color: #777;
+  margin-left: auto;
+}
+
+.item-actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap; /* Permite que bajen en móvil */
+  gap: 8px;
+  align-items: center;
+  margin-left: auto; /* Empuja a la derecha */
+}
+
+.status-info {
+  color: #888;
+  font-style: italic;
+  font-weight: 500;
+  padding: 8px 12px;
+}
+
+/* --- Botones --- */
+.btn {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s ease;
+}
+.btn:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn-accept { background-color: #28a745; color: white; }
+.btn-accept:hover { background-color: #218838; }
+
+.btn-reject { background-color: #dc3545; color: white; }
+.btn-reject:hover { background-color: #c82333; }
+
+.btn-view-details { background-color: #f1f1f1; color: #333; border: 1px solid #ccc; }
+.btn-view-details:hover { background-color: #e0e0e0; }
+
+.btn-chat { background-color: #007bff; color: white; }
+.btn-chat:hover { background-color: #0056b3; }
+
+/* --- NUEVOS BOTONES DE CÓDIGO --- */
+.btn-generate-code { background-color: #ffc107; color: #212529; }
+.btn-generate-code:hover { background-color: #e0a800; }
+
+.btn-complete { background-color: #17a2b8; color: white; }
+.btn-complete:hover { background-color: #138496; }
+
+
+/* --- Mensajes (Cargando, Vacío, Error) --- */
+.message,
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* =====================================
+  NUEVOS ESTILOS PARA LOS MODALES 
+=====================================
+*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 450px;
+  z-index: 1001;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+.modal-content p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+/* Botones dentro del modal */
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  padding: 10px 15px;
+}
+.btn-secondary:hover { background-color: #5a6268; }
+
+/* Modal de Código Generado */
+.generated-code-modal .modal-loading {
+  font-weight: 500;
+  color: #555;
+  padding: 20px 0;
+  text-align: center;
+}
+.generated-code {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #007bff;
+  background: #f4f5f8;
+  padding: 20px;
+  text-align: center;
+  border-radius: 5px;
+  letter-spacing: 3px;
+}
+.expiry-info {
+  font-size: 0.85rem;
+  color: #777;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Modal de Completar Intercambio */
+.modal-form-group {
+  display: flex;
+  flex-direction: column;
+}
+.modal-form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 8px;
+}
+.modal-form-group input {
+  padding: 12px;
+  font-size: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  letter-spacing: 2px;
+}
+.modal-form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+}
+.modal-error {
+  color: #dc3545;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+/* --- NUEVO: Botón de Calificar --- */
+.btn-rate { 
+  background-color: #ffc107; /* Amarillo */
+  color: #212529; 
+}
+.btn-rate:hover { background-color: #e0a800; }
+
+.status-info.rated {
+  color: #28a745; /* Verde de éxito */
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* --- NUEVO: Estilos para Modal de Calificación --- */
+.rating-modal .rating-stars {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+.rating-modal .rating-stars span {
+  font-size: 2.5rem;
+  cursor: pointer;
+  opacity: 0.5; /* Estrellas apagadas */
+  transition: transform 0.1s, opacity 0.1s;
+}
+.rating-modal .rating-stars span:hover {
+  transform: scale(1.2);
+  opacity: 1;
+}
+.rating-modal .rating-stars span.selected {
+  opacity: 1; /* Estrellas encendidas */
+}
+
+/* Estilos para el <textarea> dentro del modal */
+.modal-form-group textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  min-height: 80px;
+  resize: vertical;
+  box-sizing: border-box; /* Importante */
+}
+.modal-form-group textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0,123,255,0.2);
+}

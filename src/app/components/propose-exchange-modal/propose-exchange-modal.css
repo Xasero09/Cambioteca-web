@@ -1,0 +1,62 @@
+/* Fondo oscuro semitransparente que ocupa toda la pantalla */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1050; /* Por encima de otros elementos */
+}
+
+/* Ventana blanca del modal */
+.modal-content {
+  background-color: #fff; padding: 30px; border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 90%; max-width: 600px; /* Ancho máximo */
+  max-height: 80vh; /* Altura máxima para evitar que sea muy largo */
+  display: flex; flex-direction: column; /* Organiza el contenido verticalmente */
+}
+
+.modal-content h3 { margin-top: 0; margin-bottom: 15px; font-size: 1.5rem; text-align: center;}
+.modal-content p { margin-bottom: 20px; line-height: 1.6; }
+.message { text-align: center; padding: 15px; color: #6c757d; border-radius: 5px; margin-top: 15px; }
+.message.error { background-color: #f8d7da; color: #721c24; }
+
+/* Lista desplazable de libros */
+.my-books-list {
+  max-height: 40vh; /* Limita la altura de la lista */
+  overflow-y: auto; /* Muestra barra de scroll si es necesario */
+  border: 1px solid #dee2e6;
+  border-radius: 5px; margin-bottom: 20px; padding: 10px;
+}
+
+/* Cada ítem (checkbox + libro) en la lista */
+.book-offer-item {
+  display: flex; align-items: center; padding: 10px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+.book-offer-item:last-child { border-bottom: none; } /* Quita borde al último */
+.book-offer-item input[type="checkbox"] { margin-right: 15px; transform: scale(1.2); } /* Checkbox más grande */
+.book-offer-item label { display: flex; align-items: center; cursor: pointer; flex-grow: 1; }
+.book-offer-item img { /* Estilo de la imagen miniatura */
+  width: 40px; height: 60px; object-fit: cover; margin-right: 10px;
+  border-radius: 3px; background-color: #e9ecef; /* Color si no hay imagen */
+}
+
+/* Contenedor de los botones Cancelar/Enviar */
+.modal-actions {
+  margin-top: auto; /* Empuja los botones al final si hay espacio */
+  padding-top: 20px; /* Espacio sobre los botones */
+  border-top: 1px solid #e9ecef; /* Línea separadora */
+  display: flex; justify-content: flex-end; /* Botones a la derecha */
+  gap: 15px; /* Espacio entre botones */
+}
+
+/* Estilos base de los botones (puedes ajustarlos) */
+.btn {
+  padding: 10px 20px; border: none; border-radius: 5px;
+  font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s;
+}
+.btn-secondary { background-color: #6c757d; color: white; }
+.btn-secondary:hover:not(:disabled) { background-color: #5a6268; }
+.btn-primary { background-color: #007bff; color: white; }
+.btn-primary:hover:not(:disabled) { background-color: #0056b3; }
+.btn:disabled { opacity: 0.65; cursor: not-allowed; } /* Estilo para botones deshabilitados */

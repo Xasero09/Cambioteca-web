@@ -1,0 +1,58 @@
+<div class="edit-profile-container">
+  <h2>Editar Mi Perfil</h2>
+  <p class="subtitle">Actualiza tu información personal.</p>
+
+  <div *ngIf="isLoading && !errorMessage" class="message">Cargando tu información...</div>
+  
+  <div *ngIf="errorMessage && !successMessage && isLoading" class="message error">{{ errorMessage }}</div>
+
+  <form *ngIf="!isLoading && !errorMessage && profileForm" [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="nombres">Nombres</label>
+        <input type="text" id="nombres" formControlName="nombres">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="apellido_paterno">Apellido Paterno</label>
+        <input type="text" id="apellido_paterno" formControlName="apellido_paterno">
+      </div>
+      <div class="form-group">
+        <label for="apellido_materno">Apellido Materno</label>
+        <input type="text" id="apellido_materno" formControlName="apellido_materno">
+      </div>
+    </div>
+
+    <div class="form-row">
+       <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input type="tel" id="telefono" formControlName="telefono">
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="direccion">Dirección (Calle)</label>
+        <input type="text" id="direccion" formControlName="direccion">
+      </div>
+      <div class="form-group">
+        <label for="numeracion">Numeración</label>
+        <input type="text" id="numeracion" formControlName="numeracion">
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <div *ngIf="successMessage" class="message success">{{ successMessage }}</div>
+      <div *ngIf="errorMessage && !isLoading" class="message error">{{ errorMessage }}</div> 
+      
+      <div class="button-group">
+        <button type="submit" class="btn-save" [disabled]="profileForm.invalid || isLoading">
+          {{ isLoading ? 'Guardando...' : 'Guardar Cambios' }}
+        </button>
+        <a routerLink="/perfil" class="btn-cancel">Cancelar</a>
+      </div>
+    </div>
+  </form>
+</div>

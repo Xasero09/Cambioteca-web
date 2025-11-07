@@ -1,0 +1,415 @@
+.profile-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.profile-container h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.profile-header {
+  background-color: #f8f9fa;
+  padding: 30px;
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin-bottom: 15px;
+  object-fit: cover;
+}
+
+.profile-header h3 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.profile-header .username {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+/* Estilos para la sección de estadísticas */
+.profile-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px 0;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.profile-details {
+  padding: 30px;
+}
+
+/* Estilos para la sección de detalles */
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.details-header h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.btn-edit {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-edit:hover {
+  background-color: #0056b3;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px 25px; /* Espacio vertical y horizontal */
+}
+
+.details-grid p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Estilos para el texto de Verificado */
+.verified {
+  color: #28a745;
+  font-weight: bold;
+}
+.unverified {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.profile-error {
+  text-align: center;
+  padding: 50px;
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+}
+
+.message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  padding: 50px 0;
+}
+
+/* src/app/pages/profile/profile.css */
+
+.profile-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.profile-container h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.profile-header {
+  background-color: #f8f9fa;
+  padding: 30px;
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin-bottom: 15px;
+  object-fit: cover;
+}
+
+.profile-header h3 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.profile-header .username {
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+/* Estilos para la sección de estadísticas */
+.profile-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px 0;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.profile-details {
+  padding: 30px;
+}
+
+/* Estilos para la sección de detalles */
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.details-header h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.btn-edit {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-edit:hover {
+  background-color: #0056b3;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px 25px; /* Espacio vertical y horizontal */
+}
+
+.details-grid p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Estilos para el texto de Verificado */
+.verified {
+  color: #28a745;
+  font-weight: bold;
+}
+.unverified {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.profile-error {
+  text-align: center;
+  padding: 50px;
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+}
+
+.message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  padding: 50px 0;
+}
+
+/* --- ESTILOS PARA FAVORITOS EN EL PERFIL --- */
+.favorites-section {
+  /* Se aplica al div .favorites-section dentro de .profile-card */
+  /* (o .profile-container si lo pusiste fuera de .profile-card) */
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.favorites-section h3 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+/* Contenedor del carrusel horizontal */
+.favorites-carousel {
+  display: flex;
+  overflow-x: auto; /* Habilita scroll horizontal */
+  gap: 16px;
+  padding: 10px 4px; /* Pequeño padding para la sombra */
+  
+  /* Ocultar barra de scroll (opcional pero estético) */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.favorites-carousel::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Tarjeta simple para el libro favorito */
+.book-card-simple {
+  display: block;
+  flex: 0 0 160px; /* Ancho fijo para cada tarjeta */
+  width: 160px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.book-card-simple:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+
+.book-card-simple-image {
+  height: 200px;
+  background-color: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #adb5bd;
+  font-weight: bold;
+}
+
+.book-card-simple-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-card-simple-content {
+  padding: 12px;
+}
+
+.book-card-simple-content h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.book-card-simple-content p {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mensaje de carga/vacío para la sección de favoritos */
+.favorites-section .message {
+  color: #777;
+  font-size: 1rem;
+  padding: 20px;
+  text-align: center;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+/* ... (todos tus estilos de perfil existentes) ... */
+
+/* Contenedor para los botones de la cabecera de detalles */
+.details-header .button-group-profile {
+  display: flex;
+  gap: 10px;
+}
+
+/* Estilo para el nuevo botón secundario */
+.btn-secondary {
+  background-color: #f1f1f1;
+  color: #555;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.btn-secondary:hover {
+  background-color: #e0e0e0;
+}

@@ -1,0 +1,41 @@
+<div class="detail-container">
+  
+  <div *ngIf="isLoading" class="message">Cargando detalles...</div>
+  <div *ngIf="error && !isLoading" class="message error">{{ error }}</div>
+
+  <div *ngIf="book && !isLoading" class="book-detail-grid">
+    
+    <div class="book-image-section">
+      <img *ngIf="book.first_image" [src]="book.first_image" alt="Portada de {{ book.titulo }}">
+      <div *ngIf="!book.first_image" class="image-placeholder">Sin imagen</div>
+    </div>
+
+    <div class="book-info-section">
+      <p class="author">por {{ book.autor }}</p>
+      <div class="status" [ngClass]="book.disponible ? 'available' : 'unavailable'">
+        {{ book.disponible ? '✔ Disponible' : '✖ No Disponible' }}
+      </div>
+      <h3>Descripción</h3>
+      <p class="description">{{ book.descripcion }}</p>
+      <div class="details-list">
+        <div><strong>Editorial:</strong> {{ book.editorial }}</div>
+        <div><strong>Año:</strong> {{ book.anio_publicacion }}</div>
+        <div><strong>Género:</strong> {{ book.genero_nombre }}</div>
+        <div><strong>Estado:</strong> {{ book.estado }}</div>
+        <div><strong>Tapa:</strong> {{ book.tipo_tapa }}</div>
+      </div>
+      <div class="owner-info"><strong>Por:</strong> {{ book.owner_nombre }}</div>
+      <div class="actions">
+        <button *ngIf="currentUser && currentUser.id !== book.owner_id && book.disponible" class="btn-exchange" (click)="openProposalModal()">Proponer Intercambio</button>
+        <span *ngIf="currentUser && currentUser.id === book.owner_id" class="info-message">Este es tu libro.</span>
+        <span *ngIf="!book.disponible" class="info-message unavailable">No disponible.</span>
+        <a routerLink="/catalogo" class="btn-back">← Volver</a> 
+      </div>
+      <div *ngIf="proposalSuccessMessage" class="message success">{{ proposalSuccessMessage }}</div>
+    </div> 
+  </div> 
+</div> 
+
+<app-propose-exchange-modal *ngIf="showProposalModal" [bookDesiredId]="book?.id" [bookDesiredTitle]="book?.titulo"
+  (closeModal)="closeProposalModal()" (proposalSuccess)="handleProposalSuccess($event)" (proposalError)="handleProposalError($event)"> 
+</app-propose-exchange-modal>

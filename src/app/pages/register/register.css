@@ -1,0 +1,110 @@
+/* Contenedor principal del formulario de registro */
+.register-container {
+  max-width: 500px; /* Un poco más ancho para el registro */
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Título del formulario */
+.register-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 25px;
+}
+
+/* Agrupación de label e input */
+.form-group {
+  margin-bottom: 18px; /* Un poco menos de espacio para que el form no sea tan largo */
+}
+
+/* Estilo para las etiquetas */
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+/* Estilo unificado para campos de texto y desplegables */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="tel"],
+.form-group select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 16px;
+  transition: border-color 0.3s;
+  /* Apariencia para que los select se vean similares a los input */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: white;
+}
+
+/* Añadir una flecha a los 'select' */
+.form-group select {
+   background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+   background-repeat: no-repeat;
+   background-position: right 15px top 50%;
+   background-size: .65em auto;
+}
+
+/* Estilo para el input de archivo */
+.form-group input[type="file"] {
+  font-size: 14px;
+}
+.form-group input[type="file"]::file-selector-button {
+  margin-right: 15px;
+  border: 1px solid #ccc;
+  background: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.form-group input[type="file"]::file-selector-button:hover {
+  background-color: #e0e0e0;
+}
+
+
+/* Efecto al hacer clic en un campo */
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Estilo para desplegables deshabilitados */
+.form-group select:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+/* Estilo del botón de envío */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px; /* Espacio extra antes del botón */
+  background-color: #28a745; /* Verde para registro */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Efecto al pasar el mouse sobre el botón */
+button:hover {
+  background-color: #218838; /* Verde más oscuro */
+}

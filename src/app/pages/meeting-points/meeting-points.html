@@ -1,0 +1,43 @@
+<div class="map-container-page">
+  <h2>Puntos de Encuentro Sugeridos</h2>
+  <p>Filtra por categoría para ver los puntos sugeridos en el mapa.</p>
+
+  <div class="filter-controls">
+    <div class="filter-item">
+      <input type="checkbox" id="filter-metro" [(ngModel)]="filters.metro" (ngModelChange)="onFilterChange()">
+      <label for="filter-metro">Estaciones de Metro</label>
+    </div>
+    <div class="filter-item">
+      <input type="checkbox" id="filter-duoc" [(ngModel)]="filters.duoc" (ngModelChange)="onFilterChange()">
+      <label for="filter-duoc">Sedes Duoc UC</label>
+    </div>
+     <div class="filter-item">
+      <input type="checkbox" id="filter-biblioteca" [(ngModel)]="filters.biblioteca" (ngModelChange)="onFilterChange()">
+      <label for="filter-biblioteca">Bibliotecas</label>
+    </div>
+  </div>
+  
+  <div *ngIf="isLoading" class="loading-map-placeholder">
+    <p>Cargando mapa...</p>
+  </div>
+
+  <div *ngIf="error && !isLoading" class="loading-map-placeholder">
+    <p style="color: red;">{{ error }}</p>
+  </div>
+
+  <div class="map-wrapper" *ngIf="(mapLoaded$ | async) && !isLoading && !error">
+    
+    <google-map
+      height="500px"
+      width="100%"
+      [options]="mapOptions">
+      
+      <map-marker
+        *ngFor="let marker of filteredMarkers"
+        [position]="marker.position"
+        [title]="marker.title">
+      </map-marker>
+
+    </google-map>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+.map-container-page {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.map-container-page h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.map-container-page p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+/* Estilos para los Filtros (Checkboxes) */
+.filter-controls {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #007bff;
+  cursor: pointer;
+}
+
+.filter-item label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Contenedor del Mapa */
+.map-wrapper {
+  border-radius: 8px;
+  overflow: hidden; 
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 1px solid #ddd;
+}
+
+/* Contenedor de Carga / Error */
+.loading-map-placeholder {
+  height: 500px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px dashed #ccc;
+}
+.loading-map-placeholder p {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #777;
+}

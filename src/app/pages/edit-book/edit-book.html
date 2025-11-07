@@ -1,0 +1,88 @@
+<div class="edit-book-container add-book-container"> <h2>Editar Libro</h2>
+  <p class="subtitle">Modifica los detalles de tu libro.</p>
+
+  <div *ngIf="isLoading && !errorMessage" class="message">Cargando datos del libro...</div>
+  
+  <div *ngIf="errorMessage && !successMessage" class="message error">{{ errorMessage }}</div>
+
+  <form *ngIf="!isLoading && !errorMessage && bookForm" [formGroup]="bookForm" (ngSubmit)="onSubmit()" class="book-form">
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="titulo">Título del Libro</label>
+        <input type="text" id="titulo" formControlName="titulo">
+      </div>
+      <div class="form-group">
+        <label for="autor">Autor</label>
+        <input type="text" id="autor" formControlName="autor">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="isbn">ISBN (13 dígitos)</label>
+        <input type="text" id="isbn" formControlName="isbn">
+      </div>
+      <div class="form-group">
+        <label for="anio">Año de Publicación</label>
+        <input type="number" id="anio" formControlName="anio_publicacion">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="editorial">Editorial</label>
+        <input type="text" id="editorial" formControlName="editorial">
+      </div>
+      <div class="form-group">
+        <label for="genero">Género</label>
+        <select id="genero" formControlName="id_genero">
+          <option [ngValue]="null" disabled>Selecciona un género</option>
+          <option *ngFor="let genero of generos" [value]="genero.id_genero">{{ genero.nombre }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="estado">Estado del Libro</label>
+        <select id="estado" formControlName="estado">
+          <option value="Nuevo">Nuevo</option>
+          <option value="Como nuevo">Como nuevo</option>
+          <option value="Buen estado">Buen estado</option>
+          <option value="Con desgaste">Con desgaste</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="tapa">Tipo de Tapa</label>
+        <select id="tapa" formControlName="tipo_tapa">
+          <option value="Tapa blanda">Tapa blanda</option>
+          <option value="Tapa dura">Tapa dura</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group full-width">
+      <label for="descripcion">Descripción</label>
+      <textarea id="descripcion" formControlName="descripcion" rows="4"></textarea>
+    </div>
+
+    <div class="form-group full-width">
+       <label for="disponible">¿Disponible para intercambio?</label>
+       <select id="disponible" formControlName="disponible">
+          <option [ngValue]="true">Sí, disponible</option>
+          <option [ngValue]="false">No, marcar como no disponible</option>
+       </select>
+    </div>
+
+    <div class="form-footer">
+      <div *ngIf="successMessage" class="message success">{{ successMessage }}</div>
+      <div *ngIf="errorMessage && !isLoading" class="message error">{{ errorMessage }}</div> 
+      
+      <button type="submit" [disabled]="bookForm.invalid || isLoading">
+        {{ isLoading ? 'Guardando...' : 'Guardar Cambios' }}
+      </button>
+      <a routerLink="/mis-libros" class="btn-cancel">Cancelar</a>
+    </div>
+  </form>
+</div>

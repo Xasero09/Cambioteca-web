@@ -1,0 +1,140 @@
+/* ====== Estilos Cambioteca Header – formal y accesible ====== */
+:root{
+  --bg: #f7f5f1;           /* “papel” suave */
+  --surface: #ffffff;
+  --text: #1f2937;         /* gris oscuro legible */
+  --muted: #6b7280;
+  --brand: #5f8f72;        /* verde salvia */
+  --brand-700: #3e6e55;
+  --line: #e5e7eb;
+  --focus-ring: 0 0 0 3px rgba(62,110,85,.25);
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  max-width: 1100px;
+  margin-inline: auto;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: .2px;
+  color: var(--brand-700);
+}
+
+/* Nav */
+header nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0; /* Oculta los '|' que hay como texto en el HTML */
+}
+
+header nav > * {
+  font-size: 0.95rem; /* Devuelve tamaño a los elementos del nav */
+}
+
+/* Enlaces */
+header nav a {
+  text-decoration: none;
+  color: var(--text);
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+
+header nav a:hover {
+  color: var(--brand-700);
+  background: rgba(59,122,87,.06);
+}
+
+header nav a:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Saludo */
+header nav span {
+  font-weight: 600;
+  color: var(--brand-700);
+  padding: 6px 4px;
+}
+
+/* Botón cerrar sesión */
+header nav button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s, color .15s, background .15s;
+}
+
+header nav button:hover {
+  border-color: var(--brand);
+  color: var(--brand-700);
+  background: rgba(59,122,87,.06);
+}
+
+header nav button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Separadores elegantes (reemplazan a los '|') */
+header nav > *:not(:first-child)::before {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 1.2em;
+  background: var(--line);
+  margin: 0 10px 0 2px;
+  vertical-align: middle;
+}
+
+/* Main (si quieres centrar contenido) */
+main {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding: 24px;
+}
+
+/* Responsivo */
+@media (max-width: 720px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  header nav {
+    flex-wrap: wrap;
+    gap: 6px 10px;
+  }
+  header nav > *:not(:first-child)::before {
+    display: none; /* sin separadores en móvil */
+  }
+}

@@ -1,0 +1,60 @@
+.conversation-container {
+  max-width: 800px; margin: 20px auto; border: 1px solid #dee2e6;
+  border-radius: 8px; overflow: hidden; display: flex; flex-direction: column;
+  height: calc(100vh - 120px); background-color: #fff;
+}
+.conversation-header {
+  display: flex; align-items: center; padding: 15px 20px;
+  background-color: #f8f9fa; border-bottom: 1px solid #dee2e6;
+}
+.back-button { text-decoration: none; color: #007bff; font-weight: 500; margin-right: 20px; }
+.conversation-header h2 { margin: 0; font-size: 1.3rem; flex-grow: 1; text-align: center; }
+.message { text-align: center; padding: 40px; color: #6c757d; }
+.message.error { color: #dc3545; }
+
+/* --- ESTILOS CLAVE PARA ALINEACIÓN --- */
+.messages-area {
+  flex-grow: 1; overflow-y: auto; padding: 20px;
+  background-color: #e5ddd5; 
+  display: flex; flex-direction: column;
+}
+.message-row {
+  display: flex; 
+  margin-bottom: 10px;
+  width: 100%; 
+}
+.my-message-row {
+  justify-content: flex-end !important; 
+}
+.other-message-row {
+  justify-content: flex-start !important; 
+}
+.message-bubble {
+  max-width: 70%; padding: 10px 15px; border-radius: 12px;
+  position: relative; line-height: 1.4; word-wrap: break-word;
+}
+.message-bubble p { margin: 0 0 5px 0; }
+.timestamp { font-size: 0.75rem; display: block; text-align: right; margin-top: 5px; }
+.my-message-row .message-bubble { background-color: #dcf8c6; color: #303030; border-bottom-right-radius: 4px; }
+.my-message-row .timestamp { color: rgba(0, 0, 0, 0.45); }
+.other-message-row .message-bubble { background-color: #ffffff; color: #303030; border-bottom-left-radius: 4px; }
+.other-message-row .timestamp { color: rgba(0, 0, 0, 0.45); }
+.empty-chat { text-align: center; color: #adb5bd; margin: auto; }
+
+/* --- Área de entrada (sin cambios) --- */
+.message-input-area {
+  display: flex; padding: 10px 15px; border-top: 1px solid #dee2e6; background-color: #f0f0f0;
+}
+.message-input-area textarea {
+  flex-grow: 1; border: 1px solid #ced4da; border-radius: 20px; padding: 10px 15px;
+  resize: none; margin-right: 10px; font-size: 1rem; line-height: 1.5;
+  min-height: 24px; max-height: 100px;
+}
+.message-input-area button {
+  background-color: #007bff; color: white; border: none; border-radius: 50%; width: 44px; height: 44px;
+  cursor: pointer; font-weight: 500; transition: background-color 0.2s; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0;
+}
+.message-input-area button::after { content: '➤'; font-size: 1.2rem; transform: rotate(-45deg) translateX(1px); }
+.message-input-area button:hover:not(:disabled) { background-color: #0056b3; }
+.message-input-area button:disabled { background-color: #a0cfff; cursor: not-allowed; }

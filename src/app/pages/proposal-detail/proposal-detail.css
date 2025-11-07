@@ -1,0 +1,40 @@
+.proposal-detail-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.back-button {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: 500;
+  margin-right: auto; /* Empuja el título a la derecha */
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+  text-align: center;
+  flex-grow: 1; /* Ocupa espacio disponible */
+}
+
+.message {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+.message.error {
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+}

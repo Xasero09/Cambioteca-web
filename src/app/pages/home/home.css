@@ -1,0 +1,262 @@
+/* src/app/pages/home/home.css */
+
+/* --- Contenedor Global de Sección --- */
+.section-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-subtitle {
+  font-size: 1.15rem;
+  color: var(--color-text-medium);
+  margin-top: -10px;
+  margin-bottom: 30px;
+}
+
+/* --- 1. Hero Section --- */
+.hero-section {
+  background-color: var(--color-panel-bg);
+  padding: 60px 20px 70px 20px;
+  text-align: center;
+}
+
+.hero-logo {
+  max-width: 130px;
+  margin-bottom: 20px;
+}
+
+.hero-section h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--color-text-default);
+  line-height: 1.2;
+}
+
+.hero-section .subtitle {
+  font-size: 1.2rem;
+  color: var(--color-text-medium);
+  max-width: 600px;
+  margin: 15px auto 30px;
+}
+
+.hero-cta {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Estilos base para los botones (reutilizables) */
+.btn {
+  padding: 12px 30px;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-color: var(--color-primary);
+}
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.btn-secondary:hover {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  transform: translateY(-2px);
+}
+
+
+/* --- 2. How it Works Section --- */
+.how-it-works-section {
+  padding: 70px 20px;
+  background: var(--color-background);
+  text-align: center;
+}
+
+.how-it-works-section h2 {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+
+.steps-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.step-card {
+  background: var(--color-panel-bg);
+  padding: 30px 20px;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.step-icon {
+  width: 60px;
+  height: 60px;
+  background-color: var(--color-primary-light); /* <-- USA LA VARIABLE */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: var(--color-primary); /* <-- USA LA VARIABLE */
+}
+.step-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.step-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  color: var(--color-text-default);
+}
+.step-card p {
+  color: var(--color-text-medium);
+  line-height: 1.6;
+}
+
+/* --- 3. Features Section ("Por Qué Intercambiar") --- */
+.features-section {
+  padding: 70px 20px;
+  background-color: var(--color-panel-bg);
+}
+
+.features-section h2 {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+}
+.features-section .section-subtitle {
+  text-align: center;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px 40px;
+  margin-top: 40px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+.feature-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  margin-top: -5px;
+}
+.feature-text h3 {
+  font-size: 1.2rem;
+  margin: 0 0 5px 0;
+  color: var(--color-text-default);
+}
+.feature-text p {
+  margin: 0;
+  color: var(--color-text-medium);
+  line-height: 1.6;
+}
+
+/* --- 4. Testimonials Section --- */
+.testimonials-section {
+  padding: 70px 20px;
+  background-color: var(--color-background);
+  text-align: center;
+}
+.testimonials-section h2 {
+  font-size: 2.2rem;
+  margin-bottom: 40px;
+}
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+.testimonial-card {
+  background: var(--color-panel-bg);
+  padding: 25px;
+  border-radius: 8px;
+  border-left: 5px solid var(--color-primary); /* <-- USA LA VARIABLE */
+  text-align: left;
+}
+.testimonial-card blockquote {
+  margin: 0 0 15px 0;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: #444;
+  line-height: 1.6;
+}
+.testimonial-card cite {
+  font-weight: 600;
+  color: var(--color-text-default);
+  font-style: normal;
+}
+.testimonial-card .cite-location {
+  font-weight: 400;
+  color: var(--color-text-medium);
+}
+
+/* --- 5. CTA Section --- */
+.cta-section {
+  background-color: var(--color-primary); /* <-- USA LA VARIABLE */
+  color: var(--color-text-on-primary);
+  padding: 60px 20px;
+  text-align: center;
+}
+.cta-section h2 {
+  font-size: 2.2rem;
+  margin-bottom: 30px;
+  color: var(--color-text-on-primary);
+}
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.cta-section .btn-primary {
+  background-color: #fff;
+  color: var(--color-primary);
+  border-color: #fff;
+}
+.cta-section .btn-primary:hover {
+  background-color: #f0f0f0;
+  border-color: #f0f0f0;
+  color: var(--color-primary-hover);
+}
+.cta-section .btn-secondary {
+  background-color: transparent;
+  color: #fff;
+  border-color: #fff;
+}
+.cta-section .btn-secondary:hover {
+  background-color: #fff;
+  color: var(--color-primary);
+}

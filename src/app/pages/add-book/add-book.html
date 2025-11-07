@@ -1,0 +1,102 @@
+<div class="add-book-container">
+  <h2>Añadir un Nuevo Libro al Catálogo</h2>
+  <p class="subtitle">Completa los detalles de tu libro para que otros puedan encontrarlo.</p>
+
+  <form [formGroup]="bookForm" (ngSubmit)="onSubmit()" class="book-form">
+    
+    <!-- Fila 1: Título y Autor -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="titulo">Título del Libro</label>
+        <input type="text" id="titulo" formControlName="titulo">
+      </div>
+      <div class="form-group">
+        <label for="autor">Autor</label>
+        <input type="text" id="autor" formControlName="autor">
+      </div>
+    </div>
+
+    <!-- Fila 2: ISBN y Año de Publicación -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="isbn">ISBN (13 dígitos)</label>
+        <input type="text" id="isbn" formControlName="isbn">
+      </div>
+      <div class="form-group">
+        <label for="anio">Año de Publicación</label>
+        <input type="number" id="anio" formControlName="anio_publicacion">
+      </div>
+    </div>
+
+    <!-- Fila 3: Editorial y Género -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="editorial">Editorial</label>
+        <input type="text" id="editorial" formControlName="editorial">
+      </div>
+      <div class="form-group">
+        <label for="genero">Género</label>
+        <select id="genero" formControlName="id_genero">
+          <option [ngValue]="null" disabled>Selecciona un género</option>
+          <option *ngFor="let genero of generos" [value]="genero.id_genero">{{ genero.nombre }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Fila 4: Estado y Tipo de Tapa -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="estado">Estado del Libro</label>
+        <select id="estado" formControlName="estado">
+          <option value="Nuevo">Nuevo</option>
+          <option value="Como nuevo">Como nuevo</option>
+          <option value="Buen estado">Buen estado</option>
+          <option value="Con desgaste">Con desgaste</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="tapa">Tipo de Tapa</label>
+        <select id="tapa" formControlName="tipo_tapa">
+          <!-- 👇 --- CAMBIO REALIZADO AQUÍ --- 👇 -->
+          <option value="Tapa blanda">Tapa blanda</option>
+          <option value="Tapa dura">Tapa dura</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Fila 5: Descripción -->
+    <div class="form-group full-width">
+      <label for="descripcion">Descripción</label>
+      <textarea id="descripcion" formControlName="descripcion" rows="4" placeholder="Añade detalles como el estado de las páginas, si tiene alguna marca, etc."></textarea>
+    </div>
+
+    <!-- Fila 6: Subida de Imágenes -->
+    <div class="form-group full-width">
+      <label for="imagenes">Imágenes del Libro</label>
+      <input type="file" id="imagenes" accept="image/*" multiple (change)="onFilesSelected($event)" class="file-input">
+      <small>Puedes subir varias imágenes. Haz clic en una para seleccionarla como portada.</small>
+    </div>
+
+    <!-- Fila 7: Previsualización de Imágenes -->
+    <div *ngIf="previews.length > 0" class="image-previews-container">
+      <div *ngFor="let preview of previews; let i = index" 
+           class="preview-item" 
+           (click)="setAsCover(i)"
+           [class.is-cover]="i === coverIndex">
+        <img [src]="preview" alt="Previsualización de imagen">
+        <div class="cover-badge">{{ i === coverIndex ? 'Portada' : 'Elegir' }}</div>
+      </div>
+    </div>
+
+    <!-- Mensajes y Botón de Envío -->
+    <div class="form-footer">
+      <div *ngIf="successMessage" class="message success">{{ successMessage }}</div>
+      <div *ngIf="errorMessage" class="message error">{{ errorMessage }}</div>
+      
+      <button type="submit" [disabled]="bookForm.invalid || isLoading">
+        {{ isLoading ? 'Añadiendo...' : 'Añadir Libro' }}
+      </button>
+    </div>
+  </form>
+</div>
+

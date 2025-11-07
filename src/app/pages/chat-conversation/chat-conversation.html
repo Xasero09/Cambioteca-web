@@ -1,0 +1,36 @@
+<div class="conversation-container">
+  <div class="conversation-header">
+    <a routerLink="/chat" class="back-button">&larr; Volver</a>
+    <h2>{{ conversationTitle }}</h2> 
+  </div>
+
+  <div *ngIf="isLoading" class="message">Cargando mensajes...</div>
+  <div *ngIf="error" class="message error">{{ error }}</div>
+
+  <div class="messages-area" #messageContainer *ngIf="!isLoading && !error">
+    
+    <div *ngFor="let msg of messages" 
+         class="message-row" 
+         [class.my-message-row]="isMyMessage(msg)"      
+         [class.other-message-row]="!isMyMessage(msg)"> 
+      
+      <div class="message-bubble">
+        <p>{{ msg.cuerpo }}</p>
+        <span class="timestamp">{{ msg.enviado_en | date:'shortTime' }}</span>
+      </div>
+
+    </div>
+
+    <div *ngIf="messages.length === 0" class="empty-chat">
+      Inicia la conversación...
+    </div>
+  </div>
+
+  <div class="message-input-area" *ngIf="!isLoading && !error">
+    <textarea [(ngModel)]="newMessage" 
+              placeholder="Escribe tu mensaje..." 
+              rows="1"
+              (keydown.enter)="sendMessage(); $event.preventDefault()"></textarea>
+    <button (click)="sendMessage()" [disabled]="!newMessage.trim()">Enviar</button>
+  </div>
+</div>

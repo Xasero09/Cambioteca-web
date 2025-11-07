@@ -1,0 +1,37 @@
+<div class="modal-overlay" (click)="requestClose()"> 
+  <div class="modal-content" (click)="$event.stopPropagation()"> 
+    
+    <h3>Proponer Intercambio</h3>
+    <p>Selecciona qué libro(s) quieres ofrecer a cambio de <strong>"{{ bookDesiredTitle }}"</strong> (máximo 3):</p>
+
+    <div *ngIf="isLoadingMyBooks" class="message">Cargando tus libros...</div>
+
+    <div class="my-books-list" *ngIf="!isLoadingMyBooks && myAvailableBooks.length > 0">
+      <div *ngFor="let book of myAvailableBooks" class="book-offer-item">
+        <input 
+          type="checkbox" 
+          [id]="'book_' + book.id" 
+          [value]="book.id"
+          (change)="onBookSelectionChange(book.id, $event)"> 
+        <label [for]="'book_' + book.id">
+          <img [src]="book.first_image || 'assets/icon/librodefecto.png'" alt="Portada"> <span>{{ book.titulo }}</span>
+        </label>
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="message error">{{ errorMessage }}</div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="requestClose()" [disabled]="isSubmitting">
+        Cancelar
+      </button>
+      <button 
+        class="btn btn-primary" 
+        (click)="submitProposal()" 
+        [disabled]="isSubmitting || selectedBookIds.length === 0 || selectedBookIds.length > 3 || myAvailableBooks.length === 0 || isLoadingMyBooks">
+        {{ isSubmitting ? 'Enviando...' : 'Enviar Propuesta' }} 
+      </button>
+    </div>
+
+  </div>
+</div>

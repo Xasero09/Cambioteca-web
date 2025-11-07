@@ -1,0 +1,135 @@
+/* src/app/pages/login/login.css (Actualizado con Variables) */
+
+.login-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 60px;
+  min-height: 80vh;
+  background-color: var(--color-panel-bg); /* Fondo gris claro */
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 30px;
+  background: var(--color-background); /* Fondo blanco */
+  border-radius: 8px;
+  box-shadow: var(--shadow-md); /* Sombra definida globalmente */
+}
+
+.login-card h2 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-default); /* Texto principal */
+  margin-top: 0;
+  margin-bottom: 25px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Estilos de Formulario --- */
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-medium); /* Texto secundario */
+  margin-bottom: 8px;
+}
+
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1px solid var(--color-border-light); /* Borde gris claro */
+  border-radius: 5px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--color-primary); /* Borde terracota */
+  /* Sombra/Anillo con el color de fondo terracota claro */
+  box-shadow: 0 0 0 3px var(--color-primary-light); 
+}
+
+/* --- Enlace "Olvidaste Contraseña" --- */
+.form-links {
+  text-align: right;
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+
+.forgot-password-link {
+  font-size: 0.85rem;
+  color: var(--color-primary); /* Color terracota */
+  text-decoration: none;
+}
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
+
+/* --- Botón de Enviar --- */
+.btn-submit {
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-on-primary); /* Texto blanco */
+  background-color: var(--color-primary); /* Fondo terracota */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+  background-color: var(--color-primary-hover); /* Terracota oscuro */
+}
+
+.btn-submit:disabled {
+  background-color: var(--color-text-light); /* Gris claro */
+  cursor: not-allowed;
+}
+
+/* --- Enlace "Registrarse" --- */
+.signup-link {
+  text-align: center;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border-light); /* Borde gris claro */
+  font-size: 0.95rem;
+  color: var(--color-text-medium);
+}
+
+.signup-link a {
+  color: var(--color-primary); /* Color terracota */
+  font-weight: 600;
+  text-decoration: none;
+}
+.signup-link a:hover {
+  text-decoration: underline;
+}
+
+/* --- Mensaje de Error --- */
+/* (Mantenemos los colores específicos de error, 
+   ya que son más detallados que la variable --color-error) */
+.message.login-error {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #f8d7da; /* Fondo rosa pálido */
+  color: #721c24; /* Texto rojo oscuro */
+  border: 1px solid #f5c6cb;
+  text-align: center;
+}

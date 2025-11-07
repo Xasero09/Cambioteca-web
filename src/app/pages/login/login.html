@@ -1,0 +1,41 @@
+<div class="login-page-container">
+  
+  <div class="login-card">
+    <h2>Iniciar Sesión</h2>
+    
+    <div *ngIf="loginError" class="message error login-error">{{ loginError }}</div>
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" [(ngModel)]="credentials.email" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="contrasena">Contraseña</label>
+        <input type="password" id="contrasena" name="contrasena" [(ngModel)]="credentials.contrasena" required>
+      </div>
+
+      <div class="form-links">
+        <a routerLink="/recuperar-password" class="forgot-password-link">¿Olvidaste tu contraseña?</a>
+      </div>
+      
+      <button type="submit" [disabled]="isLoading" class="btn-submit">
+        {{ isLoading ? 'Entrando...' : 'Entrar' }}
+      </button>
+    </form>
+
+    <div class="signup-link">
+      <span>¿No tienes una cuenta? </span>
+      <a routerLink="/registro">Regístrate aquí</a>
+    </div>
+  </div>
+
+  <app-notification 
+    *ngIf="notificationMessage" 
+    [message]="notificationMessage" 
+    [type]="notificationType" 
+    (close)="clearNotification()"> 
+  </app-notification>
+</div>

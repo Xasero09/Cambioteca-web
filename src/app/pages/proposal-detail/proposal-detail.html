@@ -1,0 +1,27 @@
+<div class="proposal-detail-container">
+  <div class="header">
+    <a routerLink="/propuestas-recibidas" class="back-button">&larr; Volver a Propuestas</a>
+    <h1>Detalle de la Propuesta</h1>
+  </div>
+
+  <!-- Mensaje de Carga -->
+  <div *ngIf="isLoading" class="message">Cargando detalles...</div>
+  
+  <!-- Mensaje de Error -->
+  <div *ngIf="error && !isLoading" class="message error">{{ error }}</div>
+
+  <!-- Contenido Principal (cuando los datos estén cargados) -->
+  <div *ngIf="!isLoading && !error && proposalData">
+    
+    <p><strong>Estado:</strong> {{ proposalData.estado }}</p>
+    <p><strong>Libro Deseado:</strong> {{ proposalData.libro_deseado?.titulo }}</p>
+    <!-- ... Aquí mostraremos más detalles y las acciones ... -->
+
+  </div>
+
+  <!-- Mensaje si no se encontraron datos -->
+   <div *ngIf="!isLoading && !error && !proposalData" class="message">
+     No se encontraron detalles para esta propuesta.
+   </div>
+
+</div>

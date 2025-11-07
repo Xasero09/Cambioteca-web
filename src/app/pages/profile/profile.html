@@ -1,0 +1,87 @@
+<div class="profile-container">
+  <h2>Mi Perfil</h2>
+
+  <div *ngIf="isLoading" class="message">Cargando perfil...</div>
+
+  <div *ngIf="user && !isLoading">
+
+    <div class="profile-card">
+      <div class="profile-header">
+        
+        <img [src]="user.avatar_url" alt="Foto de perfil" class="profile-avatar">
+        
+        <h3>{{ user.nombres }} {{ user.apellido_paterno }}</h3>
+        <p class="username">@{{ user.nombre_usuario }}</p>
+      </div>
+      
+      <div class="profile-stats">
+        <div class="stat-item">
+          <span class="stat-value">{{ metrics.libros }}</span>
+          <span class="stat-label">Libros Disponibles</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">{{ metrics.intercambios }}</span>
+          <span class="stat-label">Intercambios</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value">
+            {{ metrics.calificacion ? (metrics.calificacion | number:'1.1-1') : 'N/A' }} ⭐
+          </span>
+          <span class="stat-label">Calificación</span>
+        </div>
+      </div>
+
+      <div class="profile-details">
+        <div class="details-header">
+          <h4>Detalles de la Cuenta</h4>
+          <div class="button-group-profile">
+            <a routerLink="/perfil/editar" class="btn-edit">Editar Perfil</a>
+            <a routerLink="/perfil/cambiar-password" class="btn-secondary">Cambiar Contraseña</a>
+          </div>
+        </div>
+        
+        <div class="details-grid">
+          <p><strong>Email:</strong> {{ user.email }}</p>
+          <p><strong>RUT:</strong> {{ user.rut }}</p>
+          <p><strong>Teléfono:</strong> {{ user.telefono }}</p>
+          <p><strong>Dirección:</strong> {{ user.direccion_completa }}, {{ user.comuna_nombre }}</p>
+          <p><strong>Usuario Verificado:</strong>
+            <span [ngClass]="user.verificado ? 'verified' : 'unverified'">
+              {{ user.verificado ? 'Sí' : 'No' }}
+            </span>
+          </p>
+        </div>
+      </div>
+    </div> <div class="favorites-section">
+      <h3>Mis Libros Favoritos</h3>
+
+      <div *ngIf="isLoadingFavorites" class="message">
+        Cargando favoritos...
+      </div>
+
+      <div *ngIf="!isLoadingFavorites && favoriteBooks.length === 0" class="message">
+        Aún no has marcado ningún libro como favorito.
+      </div>
+
+      <div *ngIf="!isLoadingFavorites && favoriteBooks.length > 0" class="favorites-carousel">
+        
+        <a *ngFor="let book of favoriteBooks" 
+           [routerLink]="['/libros', book.id]" 
+           class="book-card-simple">
+          
+          <div class="book-card-simple-image">
+            <img *ngIf="book.first_image" [src]="book.first_image" [alt]="book.titulo">
+            <span *ngIf="!book.first_image">Libro</span>
+          </div>
+          <div class="book-card-simple-content">
+            <h4>{{ book.titulo }}</h4>
+            <p>{{ book.autor }}</p>
+          </div>
+        </a>
+        
+      </div>
+    </div> </div> <div *ngIf="!user && !isLoading" class="profile-error">
+    <p>No se pudo cargar la información del perfil.</p>
+  </div>
+
+</div>
