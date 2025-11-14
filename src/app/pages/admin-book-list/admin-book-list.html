@@ -1,0 +1,52 @@
+<div class="admin-management-container">
+  <div class="admin-header">
+    <h1>Gestionar Libros</h1>
+    <a routerLink="/admin" class="btn-back">Volver al Dashboard</a>
+  </div>
+  
+  <div *ngIf="isLoading" class="admin-message">Cargando libros...</div>
+  <div *ngIf="error" class="admin-message error">{{ error }}</div>
+  
+  <div *ngIf="!isLoading && !error" class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Título</th>
+          <th>Autor</th>
+          <th>Dueño (Username)</th>
+          <th>Disponible</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let book of books">
+          <td>{{ book.id }}</td>
+          <td>{{ book.titulo }}</td>
+          <td>{{ book.autor }}</td>
+          <td>{{ book.owner_nombre || 'N/A' }}</td>
+          <td>
+            <span class="status-chip" [class.active]="book.disponible">
+              {{ book.disponible ? 'Sí' : 'No' }}
+            </span>
+          </td>
+          <td>
+            <button class="btn-delete" (click)="deleteBook(book)" [disabled]="book.isDeleting">
+              {{ book.isDeleting ? 'Eliminando...' : 'Eliminar' }}
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="books.length === 0">
+          <td colspan="6">No se encontraron libros.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<app-notification
+  *ngIf="notificationMessage"
+  [message]="notificationMessage"
+  [type]="notificationType"
+  (close)="clearNotification()">
+</app-notification>

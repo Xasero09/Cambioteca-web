@@ -1,55 +1,46 @@
 <div class="catalog-container">
   
+  <!-- Barra de búsqueda -->
   <div class="search-and-filter-bar">
-    
     <div class="search-input">
+      <i class="fa-solid fa-magnifying-glass"></i>
       <input
         type="text"
         placeholder="Buscar por título, autor..."
         [(ngModel)]="searchTerm"
-        (ngModelChange)="onSearchChange()">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+        (ngModelChange)="onSearchChange()"
+      />
     </div>
-    
-    </div>
-
-  <div class="catalog-header">
-    <h2 *ngIf="searchTerm">Resultados</h2>
-    <h2 *ngIf="!searchTerm">Explora Nuestro Catálogo</h2>
   </div>
 
+  <!-- Título -->
+  <div class="catalog-header">
+    <h2 *ngIf="searchTerm; else explora">Resultados</h2>
+    <ng-template #explora><h2>Explora Nuestro Catálogo</h2></ng-template>
+  </div>
+
+  <!-- Estados -->
   <div *ngIf="isLoading" class="message-container"><p>Cargando libros...</p></div>
-  
   <div *ngIf="!isLoading && books.length === 0" class="message-container">
     <p>No se encontraron libros que coincidan con tu búsqueda.</p>
   </div>
 
+  <!-- Grid de libros -->
   <div class="book-grid" *ngIf="!isLoading && books.length > 0">
-    
-    <a *ngFor="let book of books"
-       [routerLink]="['/libros', book.id]"
-       class="book-card-link">
-      
-      <div class="book-card">
+    <div class="book-card" *ngFor="let book of books; trackBy: trackById">
 
-        <button 
-          type="button" 
-          class="favorite-btn"
-          [class.is-favorite]="isFavorite(book.id)"
-          [disabled]="isTogglingFavorite[book.id]"      
-          (click)="toggleFavorite($event, book)"> 
-          
-          <svg *ngIf="!isTogglingFavorite[book.id]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor">
-            <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/>
-          </svg>
-          
-          <span *ngIf="isTogglingFavorite[book.id]" class="spinner"></span>
-        </button>
-
+      <!-- Zona clickeable: imagen + contenido -->
+      <a class="book-card-link" [routerLink]="['/libros', book.id]">
         <div class="book-image-placeholder">
-            <img *ngIf="book.first_image" [src]="book.first_image" alt="Portada de {{ book.titulo }}">
-            <span *ngIf="!book.first_image">Libro</span>
+          <img
+            [src]="imgSrc(book)"
+            alt="Portada de {{ book.titulo }}"
+            loading="lazy"
+            decoding="async"
+            (error)="onImgError($event, book)"
+          />
         </div>
+
         <div class="book-card-content">
           <h3>{{ book.titulo }}</h3>
           <p class="author">{{ book.autor }}</p>
@@ -58,7 +49,42 @@
           </div>
           <p class="date">Publicado: {{ book.fecha_subida | date:'short' }}</p>
         </div>
+      </a>
+
+      <!-- Botón favorito (fuera del <a>) -->
+      <button
+        type="button"
+        class="favorite-btn"
+        [class.is-favorite]="isFavorite(book.id)"
+        [disabled]="isTogglingFavorite[book.id]"
+        (click)="toggleFavorite($event, book)"
+        aria-label="Marcar como favorito"
+      >
+        <svg *ngIf="!isTogglingFavorite[book.id]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" aria-hidden="true">
+          <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/>
+        </svg>
+        <span *ngIf="isTogglingFavorite[book.id]" class="spinner"></span>
+      </button>
+
+      <!-- Acciones admin (fuera del <a>) -->
+      <div class="admin-actions" *ngIf="currentUser && currentUser.es_admin">
+        <button
+          type="button"
+          class="btn-admin-delete"
+          (click)="adminDeleteBook(book.id, $event)"
+          [disabled]="book.isDeleting"
+        >
+          {{ book.isDeleting ? 'Borrando...' : 'Eliminar (Admin)' }}
+        </button>
       </div>
-    </a>
+
+    </div>
   </div>
 </div>
+
+<app-notification
+  *ngIf="notificationMessage"
+  [message]="notificationMessage"
+  [type]="notificationType"
+  (close)="clearNotification()"
+></app-notification>

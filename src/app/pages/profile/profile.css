@@ -1,24 +1,66 @@
+/* --- Paleta de Colores y Variables --- */
+:host {
+  /* Puedes cambiar estos colores para que coincidan con tu marca.
+    Usaré el púrpura y amarillo que te gustaron.
+  */
+  --primary-color: #6a0dad; /* Púrpura principal */
+  --primary-light: rgba(106, 13, 173, 0.1); /* Para 'focus' y 'hover' suaves */
+  --accent-color: #ffb703; /* Amarillo para estrellas */
+  --text-dark: #1f2937;
+  --text-medium: #6b7280;
+  --text-light: #ecf0f1;
+  --bg-page: #f9fafb;     /* Fondo de toda la página */
+  --bg-card: #ffffff;     /* Fondo de las tarjetas */
+  --bg-header: #f8f9fa;  /* Fondo de la cabecera del perfil */
+  --border-color: #e5e7eb;
+  --success-color: #059669;
+  --danger-color: #dc2626;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* Animación */
+  --transition-fast: all 0.2s ease-out;
+}
+
+/* --- Contenedor Principal --- */
 .profile-container {
   max-width: 800px;
   margin: 40px auto;
   padding: 20px;
+  background-color: var(--bg-page); /* Fondo de página */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .profile-container h2 {
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 30px;
+  color: var(--text-dark);
 }
 
+/* --- Tarjeta de Perfil Principal --- */
 .profile-card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: var(--bg-card);
+  border-radius: 12px; /* Bordes más suaves */
+  box-shadow: var(--shadow-md);
   overflow: hidden;
+  border: 1px solid var(--border-color);
+  
+  /* Animación de entrada */
+  animation: fadeIn 0.4s ease-out;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Cabecera del Perfil (Avatar y Nombre) --- */
 .profile-header {
-  background-color: #f8f9fa;
+  background-color: var(--bg-header);
   padding: 30px;
   text-align: center;
 }
@@ -27,293 +69,215 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  border: 4px solid #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border: 6px solid #fff; /* Borde más grueso */
+  box-shadow: var(--shadow-lg); /* Sombra más pronunciada */
   margin-bottom: 15px;
   object-fit: cover;
+  
+  /* --- INTERACCIÓN: Avatar "Pop" --- */
+  transition: var(--transition-fast);
+  cursor: pointer;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 .profile-header h3 {
   margin: 0;
   font-size: 1.8rem;
+  color: var(--text-dark);
 }
 
 .profile-header .username {
-  color: #6c757d;
+  color: var(--primary-color); /* Color primario */
   font-size: 1.1rem;
+  font-weight: 500;
 }
 
-/* Estilos para la sección de estadísticas */
+/* --- Estadísticas (Más interactivas) --- */
 .profile-stats {
   display: flex;
   justify-content: space-around;
-  padding: 20px 0;
-  background-color: #f8f9fa;
-  border-top: 1px solid #e9ecef;
-  border-bottom: 1px solid #e9ecef;
+  padding: 25px 10px;
+  background-color: var(--bg-card); /* Fondo blanco */
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .stat-item {
   text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  width: 120px; /* Ancho fijo para mejor espaciado */
+  transition: var(--transition-fast);
+}
+
+/* --- INTERACCIÓN: Stats "Lift" --- */
+.stat-item:hover {
+  transform: translateY(-5px);
+  background-color: var(--bg-header);
+  box-shadow: var(--shadow-sm);
 }
 
 .stat-value {
   display: block;
   font-size: 1.8rem;
-  font-weight: bold;
-  color: #007bff;
+  font-weight: 700; /* Más grueso */
+  color: var(--primary-color); /* Color primario */
 }
 
 .stat-label {
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--text-medium);
 }
 
+/* --- Detalles de la Cuenta --- */
 .profile-details {
   padding: 30px;
 }
 
-/* Estilos para la sección de detalles */
 .details-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #007bff;
+  border-bottom: 2px solid var(--primary-color); /* Borde primario */
   padding-bottom: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .details-header h4 {
   margin: 0;
-  font-size: 1.2rem;
-  color: #333;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-dark);
 }
 
-.btn-edit {
-  background-color: #007bff;
-  color: white;
-  padding: 8px 16px;
+/* --- INTERACCIÓN: Botones --- */
+.button-group-profile {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-edit, .btn-secondary {
+  padding: 10px 18px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   font-size: 0.9rem;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  text-decoration: none;
+  transition: var(--transition-fast);
+  display: inline-block;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Efecto de clic (pulsación) */
+/* --- Botón EDITAR PERFIL (Púrpura) --- */
+.btn-edit {
+  /* Estilo Base */
+  background-color: var(--primary-color, #6a0dad) !important;
+  color: white !important;
+  padding: 10px 18px !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+  box-shadow: var(--shadow-sm) !important;
+  border: none !important; /* Quita cualquier borde */
 }
 
 .btn-edit:hover {
-  background-color: #0056b3;
+  /* Estilo Hover (Púrpura más claro) */
+  background-color: var(--secondary-color, #8a2be2) !important;
+  color: white !important; /* Asegura que el texto siga blanco */
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-2px) !important;
 }
+
+/* --- Botón CAMBIAR CONTRASEÑA (Blanco) --- */
+.btn-secondary {
+  /* Estilo Base */
+  background-color: var(--bg-card, #fff) !important;
+  color: var(--text-medium, #6b7280) !important;
+  border: 1px solid var(--border-color, #e5e7eb) !important;
+  padding: 10px 18px !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-secondary:hover {
+  /* Estilo Hover (Gris claro) */
+  background-color: var(--bg-header, #f8f9fa) !important;
+  color: var(--text-dark, #1f2937) !important;
+  border-color: #aaa !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Efecto de clic para ambos */
+.btn-edit:active,
+.btn-secondary:active {
+  transform: scale(0.98) !important;
+  opacity: 0.9 !important;
+}
+/* --- Fin Botones --- */
+
 
 .details-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 15px 25px; /* Espacio vertical y horizontal */
+  gap: 20px;
 }
 
 .details-grid p {
   font-size: 1rem;
   line-height: 1.6;
   margin: 0;
+  color: var(--text-dark);
 }
 
-/* Estilos para el texto de Verificado */
+/* Hacemos las etiquetas más sutiles */
+.details-grid p strong {
+  color: var(--text-medium);
+  font-weight: 500;
+  margin-right: 8px;
+}
+
 .verified {
-  color: #28a745;
-  font-weight: bold;
+  color: var(--success-color);
+  font-weight: 600;
 }
 .unverified {
-  color: #dc3545;
-  font-weight: bold;
+  color: var(--danger-color);
+  font-weight: 600;
 }
 
-.profile-error {
-  text-align: center;
-  padding: 50px;
-  color: #721c24;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 8px;
-}
-
-.message {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #666;
-  padding: 50px 0;
-}
-
-/* src/app/pages/profile/profile.css */
-
-.profile-container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
-}
-
-.profile-container h2 {
-  text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 30px;
-}
-
-.profile-card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-.profile-header {
-  background-color: #f8f9fa;
-  padding: 30px;
-  text-align: center;
-}
-
-.profile-avatar {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  border: 4px solid #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  margin-bottom: 15px;
-  object-fit: cover;
-}
-
-.profile-header h3 {
-  margin: 0;
-  font-size: 1.8rem;
-}
-
-.profile-header .username {
-  color: #6c757d;
-  font-size: 1.1rem;
-}
-
-/* Estilos para la sección de estadísticas */
-.profile-stats {
-  display: flex;
-  justify-content: space-around;
-  padding: 20px 0;
-  background-color: #f8f9fa;
-  border-top: 1px solid #e9ecef;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-value {
-  display: block;
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #007bff;
-}
-
-.stat-label {
-  font-size: 0.9rem;
-  color: #6c757d;
-}
-
-.profile-details {
-  padding: 30px;
-}
-
-/* Estilos para la sección de detalles */
-.details-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid #007bff;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-}
-
-.details-header h4 {
-  margin: 0;
-  font-size: 1.2rem;
-  color: #333;
-}
-
-.btn-edit {
-  background-color: #007bff;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 5px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn-edit:hover {
-  background-color: #0056b3;
-}
-
-.details-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 15px 25px; /* Espacio vertical y horizontal */
-}
-
-.details-grid p {
-  font-size: 1rem;
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* Estilos para el texto de Verificado */
-.verified {
-  color: #28a745;
-  font-weight: bold;
-}
-.unverified {
-  color: #dc3545;
-  font-weight: bold;
-}
-
-.profile-error {
-  text-align: center;
-  padding: 50px;
-  color: #721c24;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 8px;
-}
-
-.message {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #666;
-  padding: 50px 0;
-}
-
-/* --- ESTILOS PARA FAVORITOS EN EL PERFIL --- */
+/* --- ESTILOS PARA FAVORITOS (Sección separada) --- */
 .favorites-section {
-  /* Se aplica al div .favorites-section dentro de .profile-card */
-  /* (o .profile-container si lo pusiste fuera de .profile-card) */
   margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
+  padding: 30px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
 }
 
 .favorites-section h3 {
   font-size: 1.5rem;
-  color: #333;
+  font-weight: 700;
+  color: var(--text-dark);
   margin-bottom: 20px;
   text-align: left;
 }
 
-/* Contenedor del carrusel horizontal */
 .favorites-carousel {
   display: flex;
-  overflow-x: auto; /* Habilita scroll horizontal */
+  overflow-x: auto;
   gap: 16px;
-  padding: 10px 4px; /* Pequeño padding para la sombra */
-  
-  /* Ocultar barra de scroll (opcional pero estético) */
+  padding: 10px 4px;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
 }
@@ -321,28 +285,29 @@
   display: none; /* Chrome/Safari */
 }
 
-/* Tarjeta simple para el libro favorito */
+/* --- INTERACCIÓN: Tarjetas de Favoritos --- */
 .book-card-simple {
   display: block;
-  flex: 0 0 160px; /* Ancho fijo para cada tarjeta */
+  flex: 0 0 160px;
   width: 160px;
-  border-radius: 8px;
+  border-radius: 12px;
   background: #fff;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: var(--transition-fast);
 }
 
 .book-card-simple:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
 }
 
 .book-card-simple-image {
   height: 200px;
-  background-color: #e9ecef;
+  background-color: var(--bg-header);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -354,6 +319,12 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Animación sutil de zoom en la imagen */
+  transition: transform 0.3s ease;
+}
+
+.book-card-simple:hover .book-card-simple-image img {
+  transform: scale(1.05);
 }
 
 .book-card-simple-content {
@@ -363,6 +334,7 @@
 .book-card-simple-content h4 {
   font-size: 0.9rem;
   font-weight: 600;
+  color: var(--text-dark);
   margin: 0 0 4px 0;
   white-space: nowrap;
   overflow: hidden;
@@ -371,45 +343,30 @@
 
 .book-card-simple-content p {
   font-size: 0.8rem;
-  color: #666;
+  color: var(--text-medium);
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Mensaje de carga/vacío para la sección de favoritos */
+/* Mensajes de Carga/Vacío */
+.message,
 .favorites-section .message {
-  color: #777;
-  font-size: 1rem;
-  padding: 20px;
   text-align: center;
-  background: #f9f9f9;
+  font-size: 1.1rem;
+  color: var(--text-medium);
+  padding: 50px 20px;
+  background-color: var(--bg-header);
   border-radius: 8px;
+  border: 1px dashed var(--border-color);
 }
 
-/* ... (todos tus estilos de perfil existentes) ... */
-
-/* Contenedor para los botones de la cabecera de detalles */
-.details-header .button-group-profile {
-  display: flex;
-  gap: 10px;
-}
-
-/* Estilo para el nuevo botón secundario */
-.btn-secondary {
-  background-color: #f1f1f1;
-  color: #555;
-  padding: 8px 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background-color 0.3s;
-}
-
-.btn-secondary:hover {
-  background-color: #e0e0e0;
+.profile-error {
+  text-align: center;
+  padding: 50px;
+  color: var(--error-text);
+  background-color: var(--error-bg);
+  border: 1px solid var(--danger-color);
+  border-radius: 8px;
 }

@@ -23,6 +23,12 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
 import { ResetPasswordComponent } from './pages/reset-password/reset-password';
 
 import { AboutUsComponent } from './pages/about-us/about-us';
+import { adminGuard } from './core/guards/admin-guard';
+import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard';
+import { ProposalsSentComponent } from './pages/proposals-sent/proposals-sent';
+import { AdminUserListComponent } from './pages/admin-user-list/admin-user-list';
+import { AdminBookListComponent } from './pages/admin-book-list/admin-book-list';
+import { PublicProfileComponent } from './pages/public-profile/public-profile';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent }, 
@@ -39,6 +45,31 @@ export const routes: Routes = [
     path: 'perfil/cambiar-password', 
     component: ChangePasswordComponent, 
     canActivate: [authGuard] 
+  },
+  { 
+    path: 'usuario/:id', // La URL dinámica (ej: /usuario/5)
+    component: PublicProfileComponent,
+    canActivate: [authGuard] // (O quítalo si quieres que los perfiles sean 100% públicos)
+  },
+
+
+  {
+    path: 'admin',
+    canActivate: [adminGuard], // 👈 El "guard" protege TODAS las rutas hijas
+    children: [
+      {
+        path: '', // La ruta /admin (vacía)
+        component: AdminDashboardComponent 
+      },
+      {
+        path: 'users', // La ruta /admin/users
+        component: AdminUserListComponent
+      },
+      {
+        path: 'books', // La ruta /admin/books
+        component: AdminBookListComponent
+      }
+    ]
   },
 
   { path: 'sobre-nosotros', component: AboutUsComponent },
@@ -84,16 +115,18 @@ export const routes: Routes = [
     component: ChatConversationComponent,
     canActivate: [authGuard]
   },
-  { 
-    path: 'propuestas-recibidas', // URL para ver las propuestas
-    component: ReceivedProposalsComponent, 
-    canActivate: [authGuard] 
+  {
+    path: 'propuestas/recibidas', // 👈 RUTA CAMBIADA
+    component: ReceivedProposalsComponent,
+    canActivate: [authGuard]
   },
-  { 
-    path: 'propuestas/:id', // URL para ver el detalle de UNA propuesta
-    component: ProposalDetailComponent, 
-    canActivate: [authGuard] 
+  {
+    path: 'propuestas/enviadas', // 👈 RUTA NUEVA
+    component: ProposalsSentComponent,
+    canActivate: [authGuard]
   },
+
+ { path: 'propuestas/:id', component: ProposalDetailComponent, canActivate: [authGuard] },
 
   { path: 'recuperar-password', component: ForgotPasswordComponent },
   { path: 'reset-password/:token', component: ResetPasswordComponent },

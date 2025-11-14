@@ -11,26 +11,39 @@
     </div>
 
     <div class="book-info-section">
+      
+      <h1>{{ book.titulo }}</h1>
+      
       <p class="author">por {{ book.autor }}</p>
       <div class="status" [ngClass]="book.disponible ? 'available' : 'unavailable'">
         {{ book.disponible ? '✔ Disponible' : '✖ No Disponible' }}
       </div>
-      <h3>Descripción</h3>
-      <p class="description">{{ book.descripcion }}</p>
+
+      <h3>Detalles del Libro</h3>
       <div class="details-list">
+        <div><strong>Género:</strong> {{ book.genero_nombre }}</div>
+        <div><strong>Estado Físico:</strong> {{ book.estado }}</div>
         <div><strong>Editorial:</strong> {{ book.editorial }}</div>
         <div><strong>Año:</strong> {{ book.anio_publicacion }}</div>
-        <div><strong>Género:</strong> {{ book.genero_nombre }}</div>
-        <div><strong>Estado:</strong> {{ book.estado }}</div>
         <div><strong>Tapa:</strong> {{ book.tipo_tapa }}</div>
       </div>
-      <div class="owner-info"><strong>Por:</strong> {{ book.owner_nombre }}</div>
+      
+      <h3>Descripción</h3>
+      <p class="description">{{ book.descripcion }}</p>
+
+      <div class="owner-info">
+        <strong>Publicado por:</strong> 
+        
+        <a [routerLink]="['/usuario', book.owner_id]" class="owner-link">{{ book.owner_nombre }}</a>
+      </div>
+
       <div class="actions">
         <button *ngIf="currentUser && currentUser.id !== book.owner_id && book.disponible" class="btn-exchange" (click)="openProposalModal()">Proponer Intercambio</button>
         <span *ngIf="currentUser && currentUser.id === book.owner_id" class="info-message">Este es tu libro.</span>
         <span *ngIf="!book.disponible" class="info-message unavailable">No disponible.</span>
         <a routerLink="/catalogo" class="btn-back">← Volver</a> 
       </div>
+
       <div *ngIf="proposalSuccessMessage" class="message success">{{ proposalSuccessMessage }}</div>
     </div> 
   </div> 

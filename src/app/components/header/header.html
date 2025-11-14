@@ -1,53 +1,84 @@
 <header class="main-header">
   <div class="header-content">
 
-    <div class="logo-and-home">
-      <a routerLink="/" class="logo">
-        <img src="assets/icon/cambiotecasimple.png" alt="Logo Cambioteca">
-        <span>Cambioteca</span>
-      </a>
-    </div>
+    <a routerLink="/" class="logo">
+      <img src="assets/icon/cambiotecasimple.png" alt="Logo Cambioteca">
+      <span>Cambioteca</span>
+    </a>
 
-    <!-- Menú de Usuario Logueado -->
     <ng-container *ngIf="isAuthenticated$ | async; else loggedOutMenu">
       
       <nav class="main-nav">
         <a routerLink="/catalogo" class="nav-link">Catálogo</a>
-        <!-- 👇 AÑADIDO AQUÍ 👇 -->
-        <a routerLink="/puntos-encuentro" class="nav-link">Puntos de Encuentro</a>
-        <a routerLink="/propuestas-recibidas" class="nav-link">Propuestas</a>
+        
+        <div class="nav-dropdown-container">
+          
+          <button class="nav-link dropdown-toggle" (click)="toggleProposalsDropdown($event)">
+            <span>Propuestas</span>
+            <svg class="chevron" [class.rotated]="isProposalsDropdownOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor">
+              <path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/>
+            </svg>
+          </button>
+          
+          <div class="dropdown-content" *ngIf="isProposalsDropdownOpen" (click)="$event.stopPropagation()">
+            <a routerLink="/propuestas/recibidas" (click)="closeAllDropdowns()">
+              <i class="fa-solid fa-inbox"></i>
+              <span>Recibidas</span>
+            </a>
+            <a routerLink="/propuestas/enviadas" (click)="closeAllDropdowns()">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>Enviadas</span>
+            </a>
+          </div>
+        </div>
         <a routerLink="/chat" class="nav-link">Mensajes</a>
+        
+        <a routerLink="/admin" class="nav-link admin-link" 
+           *ngIf="(currentUser$ | async)?.es_admin">
+          Panel Admin
+        </a>
       </nav>
 
       <div class="user-menu">
         
-        <button class="user-greeting-button" (click)="toggleDropdown()" *ngIf="currentUser$ | async as user">
+        <button class="user-greeting-button" 
+                (click)="toggleUserDropdown($event)" 
+                *ngIf="currentUser$ | async as user">
+          
           <span>¡Hola, {{ user.nombre_usuario }}!</span>
-          <svg class="chevron" [class.rotated]="isDropdownOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor">
+          <svg class="chevron" [class.rotated]="isUserDropdownOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" fill="currentColor">
             <path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/>
           </svg>
         </button>
 
-        <div class="dropdown-content" *ngIf="isDropdownOpen">
-          <a routerLink="/perfil" (click)="toggleDropdown()">Mi Perfil</a>
-          <a routerLink="/mis-libros" (click)="toggleDropdown()">Mis Libros</a>
-          <a routerLink="/historial" (click)="toggleDropdown()">Historial</a>
+        <div class="dropdown-content" *ngIf="isUserDropdownOpen" (click)="$event.stopPropagation()">
+          <a routerLink="/perfil" (click)="closeAllDropdowns()">
+            <i class="fa-solid fa-user-circle"></i>
+            <span>Mi Perfil</span>
+          </a>
+          <a routerLink="/mis-libros" (click)="closeAllDropdowns()">
+            <i class="fa-solid fa-book-bookmark"></i>
+            <span>Mis Libros</span>
+          </a>
+          <a routerLink="/historial" (click)="closeAllDropdowns()">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Historial</span>
+          </a>
           
           <div class="dropdown-divider"></div>
           
           <button class="dropdown-logout" (click)="onLogoutClick()">
-            Cerrar Sesión
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Cerrar Sesión</span>
           </button>
         </div>
       </div>
     </ng-container>
 
-    <!-- Menú de Invitado -->
     <ng-template #loggedOutMenu>
       <nav class="guest-nav">
         <a routerLink="/" class="nav-link home-link">Inicio</a>
         <a routerLink="/catalogo" class="nav-link">Catálogo</a>
-        <!-- 👇 AÑADIDO AQUÍ 👇 -->
         <a routerLink="/puntos-encuentro" class="nav-link">Puntos de Encuentro</a>
         <a routerLink="/login" class="nav-link">Iniciar Sesión</a>
         <a routerLink="/registro" class="btn-register">Registrarse</a>

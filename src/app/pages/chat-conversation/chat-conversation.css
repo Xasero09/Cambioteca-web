@@ -1,60 +1,206 @@
+/* src/app/pages/chat-conversation/chat-conversation.css */
+
 .conversation-container {
-  max-width: 800px; margin: 20px auto; border: 1px solid #dee2e6;
-  border-radius: 8px; overflow: hidden; display: flex; flex-direction: column;
-  height: calc(100vh - 120px); background-color: #fff;
+  max-width: 900px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 150px); /* Ocupa la altura de la pantalla menos el header/footer */
+  background: var(--color-background);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
 }
+
+/* --- Encabezado del Chat --- */
 .conversation-header {
-  display: flex; align-items: center; padding: 15px 20px;
-  background-color: #f8f9fa; border-bottom: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  background: var(--color-panel-bg);
+  border-bottom: 1px solid var(--color-border-light);
 }
-.back-button { text-decoration: none; color: #007bff; font-weight: 500; margin-right: 20px; }
-.conversation-header h2 { margin: 0; font-size: 1.3rem; flex-grow: 1; text-align: center; }
-.message { text-align: center; padding: 40px; color: #6c757d; }
-.message.error { color: #dc3545; }
 
-/* --- ESTILOS CLAVE PARA ALINEACIÓN --- */
+.back-button {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: var(--color-text-medium);
+  transition: color 0.2s;
+}
+.back-button:hover {
+  color: var(--color-primary);
+}
+
+.header-info h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-text-default);
+}
+.header-info .book-info {
+  font-size: 0.85rem;
+  color: var(--color-text-medium);
+  margin: 0;
+}
+.header-info .exchange-icon {
+  width: 12px;
+  height: 12px;
+  fill: var(--color-primary);
+  margin: 0 4px;
+  vertical-align: middle;
+}
+
+/* --- Área de Mensajes --- */
 .messages-area {
-  flex-grow: 1; overflow-y: auto; padding: 20px;
-  background-color: #e5ddd5; 
-  display: flex; flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #fcfcfc; /* Un fondo ligeramente diferente */
 }
-.message-row {
-  display: flex; 
-  margin-bottom: 10px;
-  width: 100%; 
-}
-.my-message-row {
-  justify-content: flex-end !important; 
-}
-.other-message-row {
-  justify-content: flex-start !important; 
-}
-.message-bubble {
-  max-width: 70%; padding: 10px 15px; border-radius: 12px;
-  position: relative; line-height: 1.4; word-wrap: break-word;
-}
-.message-bubble p { margin: 0 0 5px 0; }
-.timestamp { font-size: 0.75rem; display: block; text-align: right; margin-top: 5px; }
-.my-message-row .message-bubble { background-color: #dcf8c6; color: #303030; border-bottom-right-radius: 4px; }
-.my-message-row .timestamp { color: rgba(0, 0, 0, 0.45); }
-.other-message-row .message-bubble { background-color: #ffffff; color: #303030; border-bottom-left-radius: 4px; }
-.other-message-row .timestamp { color: rgba(0, 0, 0, 0.45); }
-.empty-chat { text-align: center; color: #adb5bd; margin: auto; }
 
-/* --- Área de entrada (sin cambios) --- */
+.empty-chat {
+  text-align: center;
+  padding: 40px;
+  color: var(--color-text-light);
+}
+
+/* --- ESTA ES LA MAGIA: Alineación de Filas --- */
+.message-row {
+  display: flex;
+  width: 100%;
+}
+
+.my-message-row {
+  justify-content: flex-end; /* Alinea mis mensajes a la DERECHA */
+}
+
+.other-message-row {
+  justify-content: flex-start; /* Alinea sus mensajes a la IZQUIERDA */
+}
+
+/* --- Burbujas de Mensaje --- */
+.message-bubble {
+  max-width: 70%; /* Para que no ocupe toda la pantalla */
+  padding: 10px 15px;
+  border-radius: 18px;
+  line-height: 1.5;
+  box-shadow: var(--shadow-sm);
+}
+
+.message-bubble p {
+  margin: 0;
+  white-space: pre-wrap; /* Respeta saltos de línea y espacios */
+  word-wrap: break-word; /* Evita que palabras largas rompan el layout */
+}
+
+/* Burbuja de "Ellos" (Izquierda) */
+.other-message-row .message-bubble {
+  background: var(--color-panel-bg); /* Gris claro */
+  color: var(--color-text-default);
+  border-bottom-left-radius: 5px; /* "Cola" del chat */
+}
+
+/* Burbuja de "Mía" (Derecha) */
+.my-message-row .message-bubble {
+  background: var(--color-primary); /* Terracota */
+  color: var(--color-text-on-primary); /* Blanco */
+  border-bottom-right-radius: 5px; /* "Cola" del chat */
+}
+
+.timestamp {
+  display: block;
+  font-size: 0.75rem;
+  margin-top: 5px;
+  text-align: right;
+  opacity: 0.7;
+}
+
+/* --- Área de Input --- */
 .message-input-area {
-  display: flex; padding: 10px 15px; border-top: 1px solid #dee2e6; background-color: #f0f0f0;
+  display: flex;
+  padding: 15px;
+  border-top: 1px solid var(--color-border-light);
+  background: var(--color-panel-bg);
+  gap: 10px;
 }
+
 .message-input-area textarea {
-  flex-grow: 1; border: 1px solid #ced4da; border-radius: 20px; padding: 10px 15px;
-  resize: none; margin-right: 10px; font-size: 1rem; line-height: 1.5;
-  min-height: 24px; max-height: 100px;
+  flex-grow: 1;
+  padding: 10px 15px;
+  border: 1px solid var(--color-border-light);
+  border-radius: 20px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: none; /* Evita que el usuario la agrande */
+  line-height: 1.4;
+  max-height: 100px; /* Limita altura si escriben mucho */
+  overflow-y: auto;
 }
+.message-input-area textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
 .message-input-area button {
-  background-color: #007bff; color: white; border: none; border-radius: 50%; width: 44px; height: 44px;
-  cursor: pointer; font-weight: 500; transition: background-color 0.2s; display: flex;
-  align-items: center; justify-content: center; flex-shrink: 0;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-on-primary);
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
-.message-input-area button::after { content: '➤'; font-size: 1.2rem; transform: rotate(-45deg) translateX(1px); }
-.message-input-area button:hover:not(:disabled) { background-color: #0056b3; }
-.message-input-area button:disabled { background-color: #a0cfff; cursor: not-allowed; }
+.message-input-area button:hover {
+  background-color: var(--color-primary-hover);
+}
+.message-input-area button:disabled {
+  background-color: var(--color-text-light);
+  cursor: not-allowed;
+}
+
+/* --- Mensajes de Carga/Error --- */
+.message {
+  padding: 40px;
+  text-align: center;
+  color: var(--color-text-medium);
+  font-size: 1.1rem;
+}
+.message.error {
+  color: var(--color-error);
+}
+
+/* ... (todos tus estilos existentes para .message-bubble, .header-info, etc.) ... */
+
+/* Mensaje de chat completado */
+.chat-completed-message {
+  padding: 10px 15px;
+  background-color: var(--color-panel-bg);
+  color: var(--color-text-medium);
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin: 5px;
+}
+
+/* Estilos para el input deshabilitado */
+.message-input-area.disabled {
+  background-color: #f1f1f1;
+}
+.message-input-area.disabled textarea {
+  background-color: #e9e9e9;
+  cursor: not-allowed;
+}
+.message-input-area.disabled button {
+  background-color: var(--color-text-light);
+  cursor: not-allowed;
+}

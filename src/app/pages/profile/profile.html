@@ -8,7 +8,7 @@
     <div class="profile-card">
       <div class="profile-header">
         
-        <img [src]="user.avatar_url" alt="Foto de perfil" class="profile-avatar">
+        <img [src]="getAvatarSrc()" alt="Foto de perfil" class="profile-avatar">
         
         <h3>{{ user.nombres }} {{ user.apellido_paterno }}</h3>
         <p class="username">@{{ user.nombre_usuario }}</p>
@@ -52,7 +52,9 @@
           </p>
         </div>
       </div>
-    </div> <div class="favorites-section">
+    </div> 
+    
+    <div class="favorites-section">
       <h3>Mis Libros Favoritos</h3>
 
       <div *ngIf="isLoadingFavorites" class="message">
@@ -80,7 +82,10 @@
         </a>
         
       </div>
-    </div> </div> <div *ngIf="!user && !isLoading" class="profile-error">
+    </div> 
+  </div> 
+
+  <div *ngIf="!user && !isLoading" class="profile-error">
     <p>No se pudo cargar la información del perfil.</p>
   </div>
 

@@ -4,24 +4,135 @@
     <h1>Detalle de la Propuesta</h1>
   </div>
 
-  <!-- Mensaje de Carga -->
   <div *ngIf="isLoading" class="message">Cargando detalles...</div>
-  
-  <!-- Mensaje de Error -->
   <div *ngIf="error && !isLoading" class="message error">{{ error }}</div>
 
-  <!-- Contenido Principal (cuando los datos estén cargados) -->
-  <div *ngIf="!isLoading && !error && proposalData">
+  <div *ngIf="!isLoading && !error && proposalData as p">
     
-    <p><strong>Estado:</strong> {{ proposalData.estado }}</p>
-    <p><strong>Libro Deseado:</strong> {{ proposalData.libro_deseado?.titulo }}</p>
-    <!-- ... Aquí mostraremos más detalles y las acciones ... -->
+    <!-- 1. Resumen del Intercambio (Sin cambios) -->
+    <div class="proposal-summary">
+      <div class="summary-card mine">
+        <span class="card-label">{{ myRole === 'receptor' ? 'Libro que te piden' : 'Libro que quieres' }}</span>
+        <h4>{{ p.libro_deseado?.titulo }}</h4>
+        <p>por {{ p.libro_deseado?.autor }}</p>
+      </div>
+      <div class="exchange-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"><path d="M32 96l320 0c26.5 0 48 21.5 48 48l0 32c0 10.9-3.6 21.1-9.9 29.1L331.3 320.8c-10.1 12.8-26.6 20.2-43.3 20.2l-32.2 0c-16.7 0-33.2-7.5-43.3-20.2L153.9 197.1c-6.3-8-9.9-18.2-9.9-29.1l0-32C144 117.5 165.5 96 192 96l0 0M480 320h32c8.8 0 16 7.2 16 16l0 64c0 8.8-7.2 16-16 16H480c-8.8 0-16-7.2-16-16l0-64c0-8.8 7.2-16 16-16zM0 320h32c8.8 0 16 7.2 16 16l0 64c0 8.8-7.2 16-16 16H0c-8.8 0-16-7.2-16-16l0-64C-16 327.2 -8.8 320 0 320z"/></svg>
+      </div>
+      <div class="summary-card counterpart">
+        <span class="card-label">{{ myRole === 'receptor' ? 'Propuesta de' : 'Enviada a' }}</span>
+        <h4>@{{ myRole === 'receptor' ? p.solicitante?.nombre_usuario : p.receptor?.nombre_usuario }}</h4>
+        <p>Te ofrece {{ p.ofertas?.length }} libro(s)</p>
+      </div>
+    </div>
+
+    <!-- 2. Estado de la Propuesta (Sin cambios) -->
+    <div class="status-info status-{{p.estado | lowercase}}">
+      <strong>Estado:</strong> {{ p.estado }}
+    </div>
+
+    <!-- 3. ACCIÓN: [RECEPTOR] Aceptar/Rechazar (Si está Pendiente) -->
+    <div class="action-panel" *ngIf="canAcceptOrReject(p)">
+      <h3>Elige el libro que quieres a cambio:</h3>
+      <div class="offers-list">
+        <label *ngFor="let offer of p.ofertas" class="offer-card" [class.selected]="selectedOfferId === offer.libro_ofrecido.id_libro">
+          <input type="radio" name="selectedOffer" [value]="offer.libro_ofrecido.id_libro" [(ngModel)]="selectedOfferId">
+          <div class="offer-details">
+            <span class="offer-title">{{ offer.libro_ofrecido.titulo }}</span>
+            <span class="offer-author">{{ offer.libro_ofrecido.autor }}</span>
+          </div>
+        </label>
+      </div>
+      <div class="action-buttons">
+        <button class="btn btn-accept" (click)="acceptProposal()" [disabled]="!selectedOfferId || isProcessingAction">
+          {{ isProcessingAction ? 'Aceptando...' : 'Aceptar Libro Seleccionado' }}
+        </button>
+        <button class="btn btn-reject" (click)="rejectProposal()" [disabled]="isProcessingAction">
+          Rechazar Propuesta
+        </button>
+      </div>
+    </div>
+
+    <!-- 4. ACCIÓN: [SOLICITANTE] Cancelar (Si está Pendiente) -->
+    <div class="action-panel" *ngIf="canCancel(p)">
+      <h3>Esperando respuesta</h3>
+      <p>Estás ofreciendo {{ p.ofertas?.length }} libro(s) a @{{ p.receptor?.nombre_usuario }} a cambio de "{{ p.libro_deseado?.titulo }}".</p>
+      <div class="action-buttons">
+        <button class="btn btn-reject" (click)="cancelProposal()" [disabled]="isProcessingAction">
+          {{ isProcessingAction ? 'Cancelando...' : 'Cancelar Propuesta' }}
+        </button>
+      </div>
+    </div>
+    
+    <!-- 5. ACCIÓN: [RECEPTOR] Proponer Encuentro (Si Aceptó y NO hay fecha) -->
+    <div class="action-panel coordination-form" *ngIf="canProposeEncuentro(p)">
+      <h3>Coordinar Encuentro</h3>
+      <p>¡Propuesta aceptada! Por favor, sugiere un lugar y fecha para el intercambio. Esto se enviará al chat.</p>
+      <div class="form-group">
+        <label for="lugar">Lugar de Encuentro</label>
+        <input type="text" id="lugar" [(ngModel)]="meetingLugar" placeholder="Ej: Metro Baquedano, (Salida...)">
+      </div>
+      <div class="form-group">
+        <label for="fecha">Fecha y Hora</label>
+        <input type="datetime-local" id="fecha" [(ngModel)]="meetingFecha">
+      </div>
+      <div class="action-buttons">
+        <button class="btn btn-primary" (click)="onProposeMeetingPoint()" [disabled]="isProcessingAction || !meetingLugar || !meetingFecha">
+          {{ isProcessingAction ? 'Enviando...' : 'Proponer Encuentro y Notificar' }}
+        </button>
+        <a [routerLink]="['/chat', p.conversacion_id]" class="btn-chat">Ir al Chat</a>
+      </div>
+    </div>
+
+    <!-- 6. ACCIÓN: [SOLICITANTE] Confirmar Encuentro (Si Aceptó y SÍ hay fecha) -->
+    <div class="action-panel coordination-confirm" *ngIf="canConfirmEncuentro(p)">
+      <h3>Propuesta de Encuentro Recibida</h3>
+      <p><strong>Lugar:</strong> {{ p.lugar_intercambio }}</p>
+      <p><strong>Fecha:</strong> {{ p.fecha_intercambio_pactada | date:'fullDate' }} a las {{ p.fecha_intercambio_pactada | date:'shortTime' }}</p>
+      <div class="action-buttons">
+        <button class="btn btn-accept" (click)="onConfirmMeetingPoint(true)" [disabled]="isProcessingAction">
+          Confirmar Encuentro
+        </button>
+        <button class="btn btn-reject" (click)="onConfirmMeetingPoint(false)" [disabled]="isProcessingAction">
+          Rechazar (Pedir otra fecha en el chat)
+        </button>
+        <a [routerLink]="['/chat', p.conversacion_id]" class="btn-chat">Ir al Chat</a>
+      </div>
+    </div>
+
+    <!-- 7. VISTA: [RECEPTOR] Esperando Confirmación -->
+    <div class="action-panel" *ngIf="showWaitingForConfirmation(p)">
+      <div class="message info">
+        <strong>Propuesta de encuentro enviada.</strong><br>
+        Esperando confirmación de @{{ p.solicitante?.nombre_usuario }}.
+        <a [routerLink]="['/chat', p.conversacion_id]" class="btn-chat">Ir al Chat</a>
+      </div>
+    </div>
+    
+    <!-- 8. VISTA: Rechazada o Cancelada -->
+    <div class="action-panel" *ngIf="p.estado === 'Rechazada' || p.estado === 'Cancelada'">
+      <div class="message error">
+        Esta propuesta fue <strong>{{ p.estado | lowercase }}</strong>.
+      </div>
+    </div>
+    
+    <!-- 9. VISTA: Completada -->
+    <div class="action-panel" *ngIf="p.estado === 'Completado'">
+      <div class="message completed">
+        Este intercambio fue <strong>completado</strong> con éxito.
+      </div>
+    </div>
 
   </div>
 
-  <!-- Mensaje si no se encontraron datos -->
-   <div *ngIf="!isLoading && !error && !proposalData" class="message">
-     No se encontraron detalles para esta propuesta.
-   </div>
-
+  <div *ngIf="!isLoading && !error && !proposalData" class="message">
+    No se encontraron detalles para esta propuesta.
+  </div>
 </div>
+
+<app-notification
+  *ngIf="notificationMessage"
+  [message]="notificationMessage"
+  [type]="notificationType"
+  (close)="clearNotification()">
+</app-notification>

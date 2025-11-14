@@ -1,11 +1,18 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// 1. Importa Router
 import { ActivatedRoute, Router, RouterLink } from '@angular/router'; 
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth';
 import { Subscription, interval, startWith, switchMap, takeWhile } from 'rxjs';
+
+// 1. Actualizamos la interfaz del Estado
+interface ChatState {
+  title: string;
+  myBookTitle: string;
+  otherBookTitle: string;
+  isCompleted: boolean; // <-- ¡NUEVA PROPIEDAD!
+}
 
 @Component({
   selector: 'app-chat-conversation',
@@ -25,8 +32,12 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   newMessage: string = '';
   currentUser: any = null;
   
-  // 2. Nueva propiedad para guardar el título
-  conversationTitle: string = 'Chat'; // Título por defecto
+  conversationTitle: string = 'Chat';
+  myBookTitle: string | null = null;
+  otherBookTitle: string | null = null;
+  
+  // 2. Propiedad para bloquear el chat
+  isCompleted: boolean = false; 
 
   private pollingSubscription: Subscription | null = null;
   private componentActive = true;
@@ -37,31 +48,44 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
     private apiService: ApiService,
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
-    private router: Router // 3. Inyecta Router
+    private router: Router
   ) {
-     // 4. Lee el título del estado de navegación
-     const navigation = this.router.getCurrentNavigation();
-     const state = navigation?.extras.state as { title: string };
-     if (state?.title) {
-       this.conversationTitle = state.title;
-     }
+    // 3. Leemos el estado completo
+    const navigation = this.router.getCurrentNavigation();
+    const state = navigation?.extras.state as ChatState;
+
+    if (state?.title) {
+      this.conversationTitle = state.title;
+      this.myBookTitle = state.myBookTitle;
+      this.otherBookTitle = state.otherBookTitle;
+      this.isCompleted = state.isCompleted || false; // <-- Guardamos el estado
+    }
   }
 
   ngOnInit(): void {
     this.currentUser = this.authService.getUser();
     const idParam = this.route.snapshot.paramMap.get('id');
 
+    // 4. Fallback por si recargan la página
+    if (!this.conversationTitle || this.conversationTitle === 'Chat') {
+       const historyState = history.state as ChatState;
+       if (historyState?.title) {
+         this.conversationTitle = historyState.title;
+         this.myBookTitle = historyState.myBookTitle;
+         this.otherBookTitle = historyState.otherBookTitle;
+         this.isCompleted = historyState.isCompleted || false; // <-- Guardamos el estado
+       }
+    }
+
     if (idParam && this.currentUser) {
       this.conversationId = +idParam;
       this.loadInitialMessages();
-      this.startPolling();
+      // Si el chat no está completado, busca nuevos mensajes
+      if (!this.isCompleted) {
+        this.startPolling();
+      }
       this.markAsSeen(); 
     } else {
-      // Intenta recuperar el título del historial si recargan la página
-      if (!this.conversationTitle || this.conversationTitle === 'Chat') {
-         const historyState = history.state as { title: string };
-         if (historyState?.title) { this.conversationTitle = historyState.title; }
-      }
       if (!idParam) this.error = "ID de conversación no encontrado.";
       if (!this.currentUser) this.error = "Usuario no identificado.";
       this.isLoading = false;
@@ -74,6 +98,7 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   }
 
   loadInitialMessages(): void {
+    // (Esta función no necesita cambios)
     if (!this.conversationId) return;
     this.isLoading = true;
     this.apiService.getMessages(this.conversationId).subscribe({
@@ -88,7 +113,8 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   }
 
   startPolling(): void {
-    if (!this.conversationId) return;
+    // (Esta función no necesita cambios)
+    if (!this.conversationId || this.isCompleted) return; // No busca si está completo
     this.pollingSubscription = interval(5000)
       .pipe(
         startWith(0), 
@@ -110,34 +136,63 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   }
 
   updateLastMessageId(): void {
+    // (Esta función no necesita cambios)
     if (this.messages.length > 0) {
       this.lastMessageId = this.messages[this.messages.length - 1].id_mensaje;
     }
   }
 
+  sendMessageOnEnter(event: Event): void {
+    const keyboardEvent = event as KeyboardEvent; 
+    if (keyboardEvent.key === 'Enter' && !keyboardEvent.shiftKey) {
+      keyboardEvent.preventDefault();
+      this.sendMessage();
+    }
+  }
+
   sendMessage(): void {
-    if (!this.newMessage.trim() || !this.conversationId || !this.currentUser) return;
-    const messageData = { id_usuario_emisor: this.currentUser.id, cuerpo: this.newMessage.trim() };
-    const tempMessage = this.newMessage;
-    this.newMessage = ''; // Limpiar input
+    // 5. Verificación de estado completado
+    if (this.isCompleted) return; // No envía si está completo
+
+    const messageBody = this.newMessage.trim();
+    if (!messageBody || !this.conversationId || !this.currentUser) return;
+    
+    const messageData = { 
+      id_usuario_emisor: this.currentUser.id, 
+      cuerpo: messageBody 
+    };
+    
+    this.newMessage = ''; 
+    this.resetTextareaHeight(); 
 
     this.apiService.sendMessage(this.conversationId, messageData).subscribe({
       next: (response) => {
-        const sentMessage = { ...messageData, id_mensaje: response.id_mensaje, enviado_en: new Date().toISOString() };
+        const sentMessage = { 
+          ...messageData, 
+          emisor_id: this.currentUser.id,
+          id_mensaje: response.id_mensaje, 
+          enviado_en: new Date().toISOString() 
+        };
         this.messages.push(sentMessage);
         this.updateLastMessageId();
         this.cdr.detectChanges(); 
         this.scrollToBottom();
       },
       error: (err) => {
+        // El backend (enviar_mensaje) ya nos avisa si está completado
+        if (err.error?.detail) {
+          this.error = err.error.detail;
+          this.isCompleted = true; // Sincroniza el estado
+        }
         console.error("Error al enviar mensaje:", err);
-        this.newMessage = tempMessage; // Restaurar mensaje si falla
+        this.newMessage = messageBody; 
       }
     });
   }
 
   markAsSeen(): void {
-    if (this.conversationId && this.currentUser) {
+    // (Esta función no necesita cambios)
+    if (this.conversationId && this.currentUser && !this.isCompleted) {
       this.apiService.markConversationAsSeen(this.conversationId, this.currentUser.id).subscribe({
         error: (err) => console.error("Error al marcar como visto:", err)
       });
@@ -147,12 +202,30 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   scrollToBottom(): void {
     setTimeout(() => { 
       try {
-        if (this.messageContainer) { this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight; }
+        if (this.messageContainer) { 
+          this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight; 
+        }
       } catch (err) { }
     }, 50); 
   }
 
   isMyMessage(message: any): boolean {
-    return message.emisor_id === this.currentUser?.id;
+    const senderId = message.emisor_id || message.id_usuario_emisor;
+    return senderId === this.currentUser?.id;
+  }
+
+  autoGrowTextarea(event: any): void {
+    const textarea = event.target as HTMLTextAreaElement;
+    textarea.style.height = 'auto'; 
+    textarea.style.height = (textarea.scrollHeight) + 'px'; 
+  }
+
+  resetTextareaHeight(): void {
+    try {
+      const textarea = document.querySelector('.message-input-area textarea') as HTMLTextAreaElement;
+      if (textarea) {
+        textarea.style.height = 'auto';
+      }
+    } catch(e) {}
   }
 }

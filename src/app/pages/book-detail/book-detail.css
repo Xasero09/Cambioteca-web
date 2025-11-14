@@ -1,137 +1,297 @@
+/* ---
+  ESTILOS PARA EL DETALLE DEL LIBRO
+  Usando la paleta de colores de 'styless.css'
+--- */
+
+/* --- Variables Locales (de tu styless.css) --- */
+:host {
+  --color-primary: #aa9797; 
+  --color-primary-hover: #9a8787;
+  --color-primary-light: #f5f3f3; 
+  --color-background: #ffffff; 
+  --color-panel-bg: #f8f9fa; 
+  --color-text-default: #2c3e50; 
+  --color-text-medium: #555;
+  --color-text-light: #95a5a6; 
+  --color-text-on-primary: #ffffff; 
+  --color-success: #28a745;
+  --color-success-bg: #d1fae5;
+  --color-error: #dc3545;
+  --color-error-bg: #fee2e2;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --transition-fast: all 0.2s ease-out;
+}
+
+/* --- Contenedor Principal --- */
 .detail-container {
-  max-width: 1100px;
-  margin: 40px auto;
-  padding: 20px;
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: var(--color-background);
+  animation: fadeIn 0.4s ease-out;
 }
 
-.message {
-  text-align: center;
-  font-size: 1.2rem;
-  color: #666;
-  padding: 50px 0;
-}
-.message.error {
-  color: #d9534f;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
+/* --- Grilla Principal (Imagen + Info) --- */
 .book-detail-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 40px;
-  align-items: start;
+  grid-template-columns: 1fr; /* 1 columna en móvil */
+  gap: 2rem;
 }
 
-/* Columna de la imagen */
-.book-image-section img {
-  width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-.image-placeholder {
-  width: 100%;
-  height: 450px;
-  background: #f0f0f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #aaa;
-  font-weight: bold;
-  border-radius: 8px;
-}
-
-/* Columna de la información */
-.book-info-section h1 {
-  font-size: 2.5rem;
-  margin: 0 0 5px 0;
-}
-.book-info-section .author {
-  font-size: 1.2rem;
-  color: #555;
-  margin-bottom: 20px;
-  font-style: italic;
-}
-.book-info-section .status {
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-weight: bold;
-  display: inline-block;
-  margin-bottom: 25px;
-}
-.status.available {
-  background-color: #d4edda;
-  color: #155724;
-}
-.status.unavailable {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-
-.book-info-section h3 {
-  border-bottom: 2px solid #007bff;
-  padding-bottom: 5px;
-  margin-bottom: 15px;
-}
-
-.description {
-  line-height: 1.6;
-  margin-bottom: 25px;
-}
-
-.details-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 25px;
-}
-
-.owner-info {
-  margin-top: 20px;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.actions {
-  margin-top: 30px;
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-.btn-exchange {
-  background-color: #28a745;
-  color: white;
-  padding: 12px 25px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-.btn-exchange:hover {
-  background-color: #218838;
-}
-.btn-back {
-  color: #007bff;
-  text-decoration: none;
-}
-.btn-back:hover {
-  text-decoration: underline;
-}
-
-/* Responsive para pantallas pequeñas */
-@media (max-width: 768px) {
+/* En pantallas más grandes, 2 columnas */
+@media (min-width: 768px) {
   .book-detail-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 2fr; /* Imagen más pequeña, info más grande */
+    gap: 3rem;
   }
 }
 
-/* ... (estilos existentes) ... */
+/* --- 1. Columna de Imagen (Llamativa) --- */
+.book-image-section {
+  width: 100%;
+  max-width: 350px; /* Ancho máximo de la imagen */
+  margin: 0 auto;
+  position: sticky; /* Se "pega" al hacer scroll */
+  top: 2rem;
+}
 
-.info-message { font-style: italic; color: #6c757d; }
-.info-message.unavailable { color: #dc3545; font-weight: bold; }
-.message { padding: 15px; margin-top: 20px; border-radius: 5px; font-weight: 500; text-align: center; }
-.message.success { background-color: #d4edda; color: #155724; }
-.message.error { background-color: #f8d7da; color: #721c24; } /* Ya deberías tenerlo */
+.book-image-section img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3; /* Proporción de libro */
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border-light);
+  
+  /* --- INTERACCIÓN: Inclinación sutil --- */
+  transition: var(--transition-fast);
+}
+.book-image-section img:hover {
+  transform: scale(1.02) rotate(-1deg);
+}
+
+.image-placeholder {
+  width: 100%;
+  max-width: 350px;
+  aspect-ratio: 2 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background-color: var(--color-panel-bg);
+  border: 1px dashed var(--color-border-light);
+  color: var(--color-text-light);
+  font-weight: 600;
+  font-size: 1.2rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* --- 2. Columna de Información --- */
+.book-info-section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ¡TÍTULO AHORA ES VISIBLE! */
+.book-info-section h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--color-text-default);
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.author {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--color-text-medium);
+  margin-bottom: 1rem;
+}
+
+/* --- Ficha de Estado (Disponible/No) --- */
+.status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 50px; /* Píldora */
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.status.available {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+.status.unavailable {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+.book-info-section h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text-default);
+  border-bottom: 2px solid var(--color-primary-light);
+  padding-bottom: 0.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.description {
+  font-size: 1rem;
+  color: var(--color-text-medium);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+/* --- Lista de Detalles (Más limpia) --- */
+.details-list {
+  display: grid;
+  /* 2 columnas si caben, si no 1 */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  background-color: var(--color-panel-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+  margin-bottom: 1.5rem;
+}
+.details-list div {
+  font-size: 0.9rem;
+  color: var(--color-text-medium);
+}
+.details-list div strong {
+  color: var(--color-text-default);
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+/* --- Ficha del Dueño (Interactiva) --- */
+.owner-info {
+  margin-bottom: 2rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--color-text-medium);
+  transition: var(--transition-fast);
+}
+.owner-info:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+.owner-info strong {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* --- Botones de Acción --- */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: auto; /* Empuja al final de la columna */
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border-light);
+}
+
+/* Botón principal (Proponer) */
+.btn-exchange {
+  /* Reutiliza el estilo de tu 'styless.css' */
+  padding: 0.875rem 1.75rem; /* 14px 28px */
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  
+  /* --- INTERACCIÓN: Color Primario --- */
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-color: var(--color-primary);
+}
+.btn-exchange:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Botón "Volver" (Secundario) */
+.btn-back {
+  padding: 0.875rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 50px;
+  cursor: pointer;
+  text-decoration: none;
+  border: 2px solid var(--color-border-light);
+  transition: var(--transition-fast);
+  color: var(--color-text-medium);
+  background-color: var(--color-background);
+}
+.btn-back:hover {
+  border-color: var(--color-text-medium);
+  color: var(--color-text-default);
+}
+
+/* Mensajes de feedback */
+.info-message {
+  font-weight: 600;
+  color: var(--color-text-medium);
+}
+.info-message.unavailable {
+  color: var(--color-error);
+}
+
+/* Mensajes de Carga/Error/Éxito */
+.message {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  text-align: center;
+  animation: fadeIn 0.3s;
+}
+.message.success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+.message.error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .book-info-section h1 {
+    font-size: 1.8rem;
+  }
+  .actions {
+    flex-direction: column;
+    align-items: stretch; /* Botones ocupan todo el ancho */
+  }
+}
+
+.owner-info .owner-link {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.owner-info .owner-link:hover {
+  color: var(--color-primary-hover);
+  text-decoration: underline;
+}

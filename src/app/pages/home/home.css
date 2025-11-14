@@ -1,127 +1,195 @@
-/* src/app/pages/home/home.css */
+/* ---
+  ESTILOS PARA LA PÁGINA DE INICIO
+  Usando la paleta de colores de 'styless.css'
+--- */
 
-/* --- Contenedor Global de Sección --- */
-.section-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 20px;
+/* --- Variables Locales (copiadas de tu styless.css) --- */
+:host {
+  --color-primary: #aa9797; 
+  --color-primary-hover: #9a8787;
+  --color-primary-light: #f5f3f3; 
+  --color-background: #ffffff; 
+  --color-panel-bg: #f8f9fa; 
+  --color-text-default: #2c3e50; 
+  --color-text-medium: #555;
+  --color-text-light: #95a5a6; 
+  --color-text-on-primary: #ffffff; 
+  --color-success: #28a745;
+  --color-error: #dc3545;
+  --color-warning: #ffc107;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --transition-fast: all 0.2s ease-out;
+  --transition-medium: all 0.3s ease-out;
 }
 
-.section-subtitle {
-  font-size: 1.15rem;
-  color: var(--color-text-medium);
-  margin-top: -10px;
-  margin-bottom: 30px;
-}
-
-/* --- 1. Hero Section --- */
+/* --- SECCIÓN 1: HERO (Llamativo) --- */
 .hero-section {
-  background-color: var(--color-panel-bg);
-  padding: 60px 20px 70px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  padding: 6rem 1.5rem;
+  color: var(--color-text-on-primary); /* Texto blanco sobre fondo oscuro */
+  
+  /* --- INTERACCIÓN: Gradiente Animado (con tu paleta) --- */
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  background-size: 200% 200%;
+  animation: pulseGradient 15s ease infinite;
+}
+
+@keyframes pulseGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.hero-content {
+  max-width: 650px;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .hero-logo {
-  max-width: 130px;
-  margin-bottom: 20px;
+  width: 100px;
+  height: auto;
+  margin-bottom: 1.5rem;
+  /* Filtro para que el logo sea blanco y resalte */
+  filter: brightness(0) invert(1); 
 }
 
-.hero-section h1 {
-  font-size: 2.8rem;
+.hero-content h1 {
+  font-size: clamp(2.5rem, 6vw, 3.5rem); /* Tamaño adaptable */
   font-weight: 700;
-  color: var(--color-text-default);
   line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--color-text-on-primary); /* Texto blanco */
 }
 
-.hero-section .subtitle {
-  font-size: 1.2rem;
-  color: var(--color-text-medium);
-  max-width: 600px;
-  margin: 15px auto 30px;
+.hero-content .subtitle {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin-bottom: 2.5rem;
+  color: var(--color-text-on-primary); /* Texto blanco */
 }
 
 .hero-cta {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
-/* Estilos base para los botones (reutilizables) */
+/* --- Botones "WOW" (Estilo Global de tu styless.css) --- */
 .btn {
-  padding: 12px 30px;
-  border-radius: 5px;
+  padding: 0.875rem 1.75rem; 
   font-size: 1rem;
   font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border-radius: 50px; /* Bordes totalmente redondeados */
   cursor: pointer;
+  text-decoration: none;
+  border: 2px solid transparent; /* Borde de 2px */
+  transition: var(--transition-medium);
+  box-shadow: var(--shadow-md);
+}
+.btn:active {
+  transform: scale(0.98); /* Efecto pulsación */
 }
 
-.btn-primary {
-  background-color: var(--color-primary);
-  color: var(--color-text-on-primary);
-  border-color: var(--color-primary);
+/* Botón Primario (Blanco, resalta en el fondo terracota) */
+.hero-section .btn-primary {
+  background-color: var(--color-background); /* Blanco */
+  color: var(--color-primary); /* Texto terracota */
+  border-color: var(--color-background);
 }
-.btn-primary:hover {
-  background-color: var(--color-primary-hover);
-  border-color: var(--color-primary-hover);
-  transform: translateY(-2px);
+.hero-section .btn-primary:hover {
+  background-color: #f0f0f0;
+  border-color: #f0f0f0;
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
 }
 
-.btn-secondary {
+/* Botón Secundario (Borde "Ghost" blanco) */
+.hero-section .btn-secondary {
   background-color: transparent;
-  color: var(--color-primary);
-  border-color: var(--color-primary);
-}
-.btn-secondary:hover {
-  background-color: var(--color-primary);
   color: var(--color-text-on-primary);
-  transform: translateY(-2px);
+  border-color: var(--color-text-on-primary);
+}
+.hero-section .btn-secondary:hover {
+  background-color: var(--color-text-on-primary);
+  color: var(--color-primary);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
 }
 
 
-/* --- 2. How it Works Section --- */
-.how-it-works-section {
-  padding: 70px 20px;
-  background: var(--color-background);
+/* --- Contenedor de Sección General --- */
+.section-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem; /* <-- Relleno reducido y más profesional */
   text-align: center;
 }
 
-.how-it-works-section h2 {
-  font-size: 2.2rem;
-  margin-bottom: 10px;
+h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--color-text-default);
+  /* CAMBIO: Reducir el margen inferior si es necesario */
+  margin-bottom: 1.55rem; /* Antes 0.5rem */
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: var(--color-text-medium);
+  margin-bottom: 2rem; /* <-- Espacio reducido y más balanceado */
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* --- SECCIÓN 2: CÓMO FUNCIONA --- */
+.how-it-works-section {
+  background-color: var(--color-panel-bg); /* Fondo gris claro */
 }
 
 .steps-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 30px;
-  margin-top: 40px;
+  gap: 1.5rem;
 }
 
+/* --- INTERACCIÓN: Tarjeta "Lift" --- */
 .step-card {
-  background: var(--color-panel-bg);
-  padding: 30px 20px;
-  border-radius: 8px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: var(--color-background);
+  padding: 2rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  transition: var(--transition-medium);
 }
 .step-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-lg);
 }
 
 .step-icon {
-  width: 60px;
-  height: 60px;
-  background-color: var(--color-primary-light); /* <-- USA LA VARIABLE */
-  border-radius: 50%;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
-  color: var(--color-primary); /* <-- USA LA VARIABLE */
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+  /* Icono con tus colores */
+  background: var(--color-primary-light);
+  color: var(--color-primary);
 }
 .step-icon svg {
   width: 28px;
@@ -129,134 +197,179 @@
 }
 
 .step-card h3 {
-  font-size: 1.3rem;
-  margin-bottom: 10px;
+  font-size: 1.25rem;
+  font-weight: 600;
   color: var(--color-text-default);
+  margin-bottom: 0.5rem;
 }
 .step-card p {
   color: var(--color-text-medium);
   line-height: 1.6;
 }
 
-/* --- 3. Features Section ("Por Qué Intercambiar") --- */
 .features-section {
-  padding: 70px 20px;
-  background-color: var(--color-panel-bg);
-}
-
-.features-section h2 {
-  text-align: center;
-  font-size: 2.2rem;
-  margin-bottom: 10px;
-}
-.features-section .section-subtitle {
-  text-align: center;
+  /* CAMBIO 1: Fondo de la sección para que resalte más */
+  background-color: var(--color-panel-bg); 
 }
 
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px 40px;
-  margin-top: 40px;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+  gap: 2rem;
+  text-align: left;
 }
 
 .feature-item {
   display: flex;
   align-items: flex-start;
-  gap: 20px;
+  gap: 1.5rem;
+  /* CAMBIO: Añadimos un fondo a cada item para que se diferencie */
+  background-color: var(--color-background);
+  padding: 1.5rem; /* Espaciado interno */
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm); /* Sombra suave para darle volumen */
+  border: 1px solid var(--color-border-light); /* Borde sutil */
+  transition: var(--transition-medium); /* Para el hover */
 }
+
+.feature-item:hover {
+  transform: translateY(-5px); /* Se eleva un poco más */
+  box-shadow: var(--shadow-md); /* Sombra más pronunciada al pasar el mouse */
+}
+
 .feature-icon {
-  font-size: 2rem;
   flex-shrink: 0;
-  margin-top: -5px;
+  font-size: 2rem; 
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary-light); /* Fondo del icono con tu color claro */
+  border-radius: 12px;
+  /* CAMBIO 2: Borde sutil para los iconos */
+  border: 1px solid rgba(0,0,0,0.05); 
+  transition: var(--transition-fast);
 }
+
+.feature-item:hover .feature-icon {
+  transform: scale(1.1) rotate(-5deg);
+  box-shadow: var(--shadow-md);
+}
+
 .feature-text h3 {
   font-size: 1.2rem;
-  margin: 0 0 5px 0;
+  font-weight: 600;
   color: var(--color-text-default);
+  margin-bottom: 0.25rem;
 }
 .feature-text p {
-  margin: 0;
   color: var(--color-text-medium);
   line-height: 1.6;
 }
 
-/* --- 4. Testimonials Section --- */
+/* --- SECCIÓN 4: TESTIMONIOS --- */
 .testimonials-section {
-  padding: 70px 20px;
-  background-color: var(--color-background);
-  text-align: center;
+  background-color: var(--color-panel-bg);
 }
-.testimonials-section h2 {
-  font-size: 2.2rem;
-  margin-bottom: 40px;
-}
+
 .testimonial-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  gap: 1.5rem;
 }
+
 .testimonial-card {
-  background: var(--color-panel-bg);
-  padding: 25px;
-  border-radius: 8px;
-  border-left: 5px solid var(--color-primary); /* <-- USA LA VARIABLE */
+  background: var(--color-background);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
   text-align: left;
+  transition: var(--transition-medium);
 }
+.testimonial-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow-lg);
+}
+
 .testimonial-card blockquote {
-  margin: 0 0 15px 0;
+  font-size: 1rem;
   font-style: italic;
-  font-size: 1.05rem;
-  color: #444;
-  line-height: 1.6;
+  color: var(--text-medium);
+  line-height: 1.7;
+  margin: 0;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--color-primary); /* Borde con tu color */
+  position: relative;
 }
+.testimonial-card blockquote::before {
+  content: '“';
+  font-family: Georgia, serif;
+  font-size: 4rem;
+  color: var(--color-primary-light); /* Color de fondo de la comilla */
+  position: absolute;
+  top: -1rem;
+  left: -1rem;
+  z-index: 1;
+}
+
 .testimonial-card cite {
-  font-weight: 600;
-  color: var(--color-text-default);
+  display: block;
   font-style: normal;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-top: 1rem;
+  z-index: 2;
+  position: relative;
 }
 .testimonial-card .cite-location {
   font-weight: 400;
-  color: var(--color-text-medium);
+  color: var(--text-medium);
 }
 
-/* --- 5. CTA Section --- */
+/* --- SECCIÓN 5: CTA FINAL (Llamada a la Acción) --- */
 .cta-section {
-  background-color: var(--color-primary); /* <-- USA LA VARIABLE */
-  color: var(--color-text-on-primary);
-  padding: 60px 20px;
+  background: var(--color-primary-light); /* Fondo claro de tu paleta */
+  padding: 4rem 1.5rem;
   text-align: center;
 }
+
 .cta-section h2 {
-  font-size: 2.2rem;
-  margin-bottom: 30px;
-  color: var(--color-text-on-primary);
+  font-size: 2rem;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
 }
+
 .cta-buttons {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 1rem;
   flex-wrap: wrap;
 }
-.cta-section .btn-primary {
-  background-color: #fff;
+
+/* En esta sección, los botones SÍ usan los estilos 
+  globales de tu 'styless.css' sin cambios.
+*/
+.cta-buttons .btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-color: var(--color-primary);
+}
+.cta-buttons .btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.cta-buttons .btn-secondary {
+  background-color: var(--color-background); /* Fondo blanco */
   color: var(--color-primary);
-  border-color: #fff;
+  border-color: var(--color-primary);
 }
-.cta-section .btn-primary:hover {
-  background-color: #f0f0f0;
-  border-color: #f0f0f0;
-  color: var(--color-primary-hover);
-}
-.cta-section .btn-secondary {
-  background-color: transparent;
-  color: #fff;
-  border-color: #fff;
-}
-.cta-section .btn-secondary:hover {
-  background-color: #fff;
-  color: var(--color-primary);
+.cta-buttons .btn-secondary:hover {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
 }

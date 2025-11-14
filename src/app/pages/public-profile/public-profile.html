@@ -1,0 +1,94 @@
+<div class="profile-container">
+  
+  <!-- Estados de Carga/Error -->
+  <div *ngIf="isLoading" class="loading-state">
+    <p>Cargando perfil...</p>
+  </div>
+  <div *ngIf="error && !isLoading" class="error-state">
+     <p>{{ error }}</p>
+     <a routerLink="/catalogo" class="btn-outline">Volver al Catálogo</a>
+  </div>
+
+  <!-- Contenido del Perfil -->
+  <div *ngIf="user && !isLoading" class="profile-content">
+    
+    <!-- 1. BANNER SUPERIOR -->
+    <div class="profile-banner">
+      <!-- (Banner púrpura) -->
+    </div>
+
+    <!-- 2. TARJETA PRINCIPAL (La que se superpone) -->
+    <div class="profile-card-main">
+      
+      <!-- 2a. Cabecera (Avatar, Nombre) -->
+      <div class="profile-info-header">
+        <div class="avatar-wrapper">
+          <img *ngIf="getAvatarSrc() as avatarUrl" [src]="avatarUrl" alt="Foto de perfil" class="avatar-img">
+          <div *ngIf="!getAvatarSrc()" class="avatar-placeholder">{{ getInitials() }}</div>
+        </div>
+        <div class="profile-titles">
+          <h3>{{ user.nombres }} {{ user.apellido_paterno }}</h3>
+          <p class="profile-tagline">@{{ user.nombre_usuario }}</p>
+        </div>
+        <!-- (Sin botón de editar, es perfil público) -->
+      </div>
+
+      <!-- --- 👇 BLOQUE DE CONTACTO QUE FALTABA 👇 --- -->
+      <div class="profile-contact-info">
+        <p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="currentColor"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg> {{ user.comuna_nombre || 'Ubicación no disponible' }}</p>
+        <p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"><path d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg> Miembro desde {{ user.fecha_registro | date:'MMM yyyy' }}</p>
+        <p class="user-status-active"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h24c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-144a32 32 0 1 0 0-64 32 32 0 1 0 0 64z"/></svg> Activo</p>
+      </div>
+      <!-- --- 👆 FIN DEL BLOQUE DE CONTACTO --- -->
+
+      <!-- --- 👇 BLOQUE DE ESTADÍSTICAS QUE FALTABA 👇 --- -->
+      <div class="profile-stats-grid">
+        <div class="stat-item">
+          <div class="stat-icon stat-icon-blue"><i class="fa-solid fa-book"></i></div>
+          <span class="stat-value stat-number-blue">{{ metrics.libros }}</span>
+          <span class="stat-label">Libros Disponibles</span>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon stat-icon-green"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+          <span class="stat-value stat-number-green">{{ metrics.intercambios }}</span>
+          <span class="stat-label">Intercambios</span>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon stat-icon-amber"><i class="fa-solid fa-star"></i></div>
+          <span class="stat-value stat-number-amber">{{ metrics.calificacion ? (metrics.calificacion | number:'1.1-1') : 'N/A' }}</span>
+          <span class="stat-label">Calificación</span>
+        </div>
+      </div>
+      <!-- --- 👆 FIN DEL BLOQUE DE ESTADÍSTICAS --- -->
+    </div>
+
+    <!-- 3. SECCIÓN DE LIBROS (Esta ya la tenías bien) -->
+    <div class="favorites-section-new">
+      <h3><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"><path d="M32 32C14.3 32 0 46.3 0 64S14.3 96 32 96H48V208c0 17.7 14.3 32 32 32H288c17.7 0 32-14.3 32-32V96h16c17.7 0 32-14.3 32-32s-14.3-32-32-32H320 192 32zM80 448H432c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-17.7 0-32 14.3-32 32s14.3 32 32 32z"/></svg> Libros de @{{ user.nombre_usuario }}</h3>
+      <p class="section-subtitle">{{ userBooks.length }} libros disponibles para intercambio</p>
+
+      <div *ngIf="isLoadingBooks" class="loading-state"><p>Cargando libros...</p></div>
+      <div *ngIf="!isLoadingBooks && userBooks.length === 0" class="empty-state">
+        <p>Este usuario no tiene libros disponibles actualmente.</p>
+      </div>
+
+      <div *ngIf="!isLoadingBooks && userBooks.length > 0" class="books-grid">
+        <a *ngFor="let book of userBooks" [routerLink]="['/libros', book.id]" class="book-card-item">
+          
+          <div class="book-card-image">
+            <img 
+              [src]="imgSrc(book)" 
+              [alt]="book.titulo"
+              (error)="onImgError($event, book)">
+          </div>
+
+          <div class="book-card-content">
+            <h4>{{ book.titulo }}</h4>
+            <p>{{ book.autor }}</p>
+          </div>
+        </a>
+      </div>
+    </div> 
+
+  </div> 
+</div>

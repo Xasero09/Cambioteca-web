@@ -1,36 +1,57 @@
 <div class="conversation-container">
+  
   <div class="conversation-header">
-    <a routerLink="/chat" class="back-button">&larr; Volver</a>
-    <h2>{{ conversationTitle }}</h2> 
+    <a routerLink="/chat" class="back-button">&larr;</a>
+    <div class="header-info">
+      <h2>{{ conversationTitle }}</h2>
+      <p class="book-info" *ngIf="myBookTitle || otherBookTitle">
+        <span *ngIf="myBookTitle">{{ myBookTitle }}</span>
+        <svg *ngIf="myBookTitle && otherBookTitle" class="exchange-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"><path d="M32 96l320 0c26.5 0 48 21.5 48 48l0 32c0 10.9-3.6 21.1-9.9 29.1L331.3 320.8c-10.1 12.8-26.6 20.2-43.3 20.2l-32.2 0c-16.7 0-33.2-7.5-43.3-20.2L153.9 197.1c-6.3-8-9.9-18.2-9.9-29.1l0-32C144 117.5 165.5 96 192 96l0 0M480 320h32c8.8 0 16 7.2 16 16l0 64c0 8.8-7.2 16-16 16H480c-8.8 0-16-7.2-16-16l0-64c0-8.8 7.2-16 16-16zM0 320h32c8.8 0 16 7.2 16 16l0 64c0 8.8-7.2 16-16 16H0c-8.8 0-16-7.2-16-16l0-64C-16 327.2 -8.8 320 0 320z"/></svg>
+        <span *ngIf="otherBookTitle">{{ otherBookTitle }}</span>
+      </p>
+    </div>
   </div>
 
   <div *ngIf="isLoading" class="message">Cargando mensajes...</div>
-  <div *ngIf="error" class="message error">{{ error }}</div>
+  <div *ngIf="error && !isCompleted" class="message error">{{ error }}</div>
 
-  <div class="messages-area" #messageContainer *ngIf="!isLoading && !error">
+  <div class="messages-area" #messageContainer *ngIf="!isLoading">
     
+    <!-- Mensaje si el chat está completado -->
+    <div *ngIf="isCompleted" class="chat-completed-message">
+      Este intercambio fue completado. El chat está archivado.
+    </div>
+
+    <!-- Mensajes -->
     <div *ngFor="let msg of messages" 
          class="message-row" 
          [class.my-message-row]="isMyMessage(msg)"      
          [class.other-message-row]="!isMyMessage(msg)"> 
-      
       <div class="message-bubble">
         <p>{{ msg.cuerpo }}</p>
         <span class="timestamp">{{ msg.enviado_en | date:'shortTime' }}</span>
       </div>
-
     </div>
 
-    <div *ngIf="messages.length === 0" class="empty-chat">
+    <div *ngIf="messages.length === 0 && !isCompleted" class="empty-chat">
       Inicia la conversación...
     </div>
   </div>
 
-  <div class="message-input-area" *ngIf="!isLoading && !error">
+  <!-- 👇 ÁREA DE INPUT ACTUALIZADA 👇 -->
+  <div class="message-input-area" 
+       *ngIf="!isLoading" 
+       [class.disabled]="isCompleted"> <!-- 1. Añade clase 'disabled' -->
+
     <textarea [(ngModel)]="newMessage" 
-              placeholder="Escribe tu mensaje..." 
+              placeholder="{{ isCompleted ? 'Chat archivado' : 'Escribe tu mensaje...' }}" 
               rows="1"
-              (keydown.enter)="sendMessage(); $event.preventDefault()"></textarea>
-    <button (click)="sendMessage()" [disabled]="!newMessage.trim()">Enviar</button>
+              (input)="autoGrowTextarea($event)"
+              (keydown.enter)="sendMessageOnEnter($event)"
+              [disabled]="isCompleted"></textarea> <!-- 2. Deshabilita textarea -->
+              
+    <button (click)="sendMessage()" [disabled]="!newMessage.trim() || isCompleted"> <!-- 3. Deshabilita botón -->
+      Enviar
+    </button>
   </div>
 </div>

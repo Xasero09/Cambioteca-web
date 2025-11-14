@@ -1,5 +1,7 @@
 export const environment = {
-  production: false,
+  production: true,
   apiUrl: 'https://proyectocapstone-production.up.railway.app/api',
-  mediaBase: 'https://proyectocapstone-production.up.railway.app/media'
+  mediaBase: 'https://proyectocapstone-production.up.railway.app/media/'
 };
+
+//environment variables for production

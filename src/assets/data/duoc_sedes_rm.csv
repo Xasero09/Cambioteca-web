@@ -1,13 +1,13 @@
-﻿name,address,comuna
-DUOC UC - Alameda,Alameda 302,Santiago
-DUOC UC - Padre Alonso de Ovalle,Padre Alonso de Ovalle 255,Santiago
-DUOC UC - Antonio Varas,Antonio Varas 666,Providencia
-DUOC UC - Plaza Norte,Av. Américo Vespucio 1737,Huechuraba
-DUOC UC - Plaza Oeste,Av. Américo Vespucio 1501,Cerrillos
-DUOC UC - Plaza Vespucio,Av. Vicuña Mackenna 5780,La Florida
-DUOC UC - Puente Alto,Domingo Tocornal 344,Puente Alto
-DUOC UC - San Bernardo,Freire 857,San Bernardo
-DUOC UC - San Carlos de Apoquindo,Camino El Alba 12881,Las Condes
-DUOC UC - San Joaquín,Vicuña Mackenna 4917,San Joaquín
-DUOC UC - Maipú,Esquina Blanca 501,Maipú
-DUOC UC - Melipilla,Serrano 1105,Melipilla
+﻿name,address,comuna,Latitud,Longitud
+DUOC UC - Alameda,Alameda 302,Santiago,-33.4487409795146,-70.6699508597278
+DUOC UC - Padre Alonso de Ovalle,Padre Alonso de Ovalle 255,Santiago,-33.4469508963765,-70.6579981838717
+DUOC UC - Antonio Varas,Antonio Varas 666,Providencia,-33.4329527955760,-70.6154813769228
+DUOC UC - Plaza Norte,Av. Américo Vespucio 1737,Huechuraba,-33.3632607589906,-70.6781744750750
+DUOC UC - Plaza Oeste,Av. Américo Vespucio 1501,Cerrillos,-33.5149332131394,-70.7184005685077
+DUOC UC - Plaza Vespucio,Av. Vicuña Mackenna 5780,La Florida,-33.5159773252048,-70.5980634491551
+DUOC UC - Puente Alto,Domingo Tocornal 344,Puente Alto,-33.5983890308973,-70.5788407414978
+DUOC UC - San Bernardo,Freire 857,San Bernardo,-33.5986331907792,-70.7057722173928
+DUOC UC - San Carlos de Apoquindo,Camino El Alba 12881,Las Condes,-33.4001103072516,-70.5056163327451
+DUOC UC - San Joaquín,Vicuña Mackenna 4917,San Joaquín,-33.4999240654807,-70.6166039624237
+DUOC UC - Maipú,Esquina Blanca 501,Maipú,-33.5111192592355,-70.7525288358606
+DUOC UC - Melipilla,Serrano 1105,Melipilla,-33.6940231926164,-71.2137501555532

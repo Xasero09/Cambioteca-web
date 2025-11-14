@@ -1,11 +1,19 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="utf-8">
   <title>CambiotecaWeb</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="assets/icon/cambiote.png">
+  
+  <!-- 
+    AQUÍ ESTÁ LA SOLUCIÓN:
+    Añadimos "?v=2" al final.
+    Esto "engaña" al navegador y lo obliga a descargar el archivo de nuevo,
+    ignorando la caché.
+  -->
+  <link rel="icon" type="image/x-icon" href="assets/icon/cambioteca.ico?v=2">
+
 </head>
 <body>
   <app-root></app-root>

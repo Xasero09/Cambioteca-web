@@ -79,3 +79,142 @@ th { font-weight: 600; color: #495057; }
 .modal-actions .btn-secondary { background-color: #6c757d; color: white; }
 .modal-actions .btn-secondary:hover:not(:disabled) { background-color: #5a6268; }
 .modal-actions .btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+/* ... (Añade esto al final de tus estilos existentes) ... */
+
+/* --- Nuevos Estilos para Chips de Estado --- */
+.status-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.status-chip i {
+  font-size: 0.7rem;
+}
+
+.status-chip.available {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-chip.paused {
+  background-color: #fff8e1;
+  color: #e6a200;
+}
+
+.status-chip.completed {
+  background-color: #e7f3ff;
+  color: #007bff;
+}
+
+.status-chip.blocked {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.notification-chip {
+  background-color: #fdeee2;
+  color: #e65a00;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.notification-chip i {
+  font-size: 0.7rem;
+}
+
+
+/* --- Nuevos Estilos para Botones --- */
+.book-item-actions {
+  /* (Tus estilos existentes para .book-item-actions) */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn-action {
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+.btn-action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-reactivate {
+  background-color: #28a745; /* Verde */
+  color: white;
+}
+.btn-reactivate:hover {
+  background-color: #218838;
+}
+
+.btn-edit {
+  background-color: #f1f1f1;
+  color: #333;
+  border: 1px solid #ccc;
+}
+.btn-edit:hover {
+  background-color: #e0e0e0;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+.btn-delete:hover {
+  background-color: #c82333;
+}
+
+.btn-view-requests {
+  background-color: #007bff;
+  color: white;
+  position: relative;
+}
+.btn-view-requests:hover {
+  background-color: #0056b3;
+}
+
+/* Bolita de notificación en el botón */
+.notification-dot {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  background-color: #dc3545;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* Texto de estado (para Completado/Bloqueado) */
+.status-text {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #555;
+  padding: 8px 0;
+}

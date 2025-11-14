@@ -6,22 +6,38 @@
 
   <div *ngIf="!isLoading && conversations.length === 0 && !error" class="empty-state">
     <p>No tienes conversaciones activas.</p>
+    <p class="empty-note">Cuando aceptes una propuesta de intercambio, aparecerá aquí.</p>
   </div>
 
   <div *ngIf="!isLoading && conversations.length > 0" class="conversations">
+    
     <a *ngFor="let conv of conversations" 
        [routerLink]="['/chat', conv.id_conversacion]" 
-       [state]="{ title: getDisplayTitle(conv) }"  
-       class="conversation-item">
+       [state]="getChatState(conv)"
+       class="conversation-item"
+
+       [class.is-completed]="conv.estado_intercambio === 'Completado'">
       
       <img [src]="getOtherUserAvatar(conv)" alt="Avatar" class="avatar">
       
       <div class="conv-details">
+        
         <div class="conv-header">
-          <span class="conv-title">{{ getDisplayTitle(conv) }}</span>
+          <span class="conv-title">{{ conv.otro_usuario?.nombre_usuario || 'Usuario' }}</span>
           <span class="conv-date">{{ conv.ultimo_enviado_en | date:'shortTime' }}</span>
         </div>
-        <p class="last-message">{{ conv.ultimo_mensaje || 'Inicia la conversación' }}</p>
+
+        <div class="conv-books">
+          <span class="book-title">{{ conv.my_book_title || 'Tu libro' }}</span>
+          <svg class="exchange-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor"><path d="M32 96l320 0c26.5 0 48 21.5 48 48l0 32c0 10.9-3.6 21.1-9.9 29.1L331.3 320.8c-10.1 12.8-26.6 20.2-43.3 20.2l-32.2 0c-16.7 0-33.2-7.5-43.3-20.2L153.9 197.1c-6.3-8-9.9-18.2-9.9-29.1l0-32C144 117.5 165.5 96 192 96l0 0M480 320h32c8.8 0 16 7.2 16 16l0 64c0 8.8-7.2 16-16 16H480c-8.8 0-16-7.2-16-16l0-64c0-8.8 7.2-16 16-16zM0 320h32c8.8 0 16 7.2 16 16l0 64c0 8.8-7.2 16-16 16H0c-8.8 0-16-7.2-16-16l0-64C-16 327.2 -8.8 320 0 320z"/></svg>
+          <span class="book-title">{{ conv.counterpart_book_title || 'Su libro' }}</span>
+        </div>
+        
+        <p class="last-message" [class.unread]="conv.unread_count > 0">
+          <!-- Mostramos un texto diferente si está completado -->
+          <span *ngIf="conv.estado_intercambio !== 'Completado'">{{ conv.ultimo_mensaje || 'Inicia la conversación' }}</span>
+          <span *ngIf="conv.estado_intercambio === 'Completado'">Intercambio completado.</span>
+        </p>
       </div>
       
       <span *ngIf="conv.unread_count > 0" class="unread-badge">{{ conv.unread_count }}</span>

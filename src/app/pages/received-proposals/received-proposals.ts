@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { AuthService } from '../../services/auth';
 import { NotificationComponent } from '../../components/notification/notification';
-import { forkJoin, map, Observable } from 'rxjs'; // 1. Importa map y Observable
-import { FormsModule } from '@angular/forms'; // 2. IMPORTANTE: Añadir FormsModule
+import { forkJoin, map, Observable, Subscription, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { FormsModule } from '@angular/forms';
 
-// Interfaz (sin cambios)
+// --- 👇 INTERFAZ ACTUALIZADA ---
 interface SolicitudResumen {
   id_solicitud: number;
   estado: string;
@@ -19,50 +20,50 @@ interface SolicitudResumen {
   ofertas?: { libro_ofrecido: { id_libro: number; titulo: string } }[];
   intercambio_id?: number | null;
   conversacion_id?: number | null;
+  lugar_intercambio?: string | null;
+  fecha_intercambio_pactada?: string | null;
+
+  propuesta_estado?: string | null; // <-- Propiedad clave para la lógica de botones
 }
+// --- 👆 FIN DE INTERFAZ ---
+
 
 @Component({
   selector: 'app-received-proposals',
   standalone: true,
-  imports: [CommonModule, RouterLink, NotificationComponent, FormsModule], // 3. AÑADIR FormsModule
+  imports: [CommonModule, RouterLink, NotificationComponent, FormsModule],
   templateUrl: './received-proposals.html',
   styleUrls: ['./received-proposals.css']
 })
-export class ReceivedProposalsComponent implements OnInit {
+export class ReceivedProposalsComponent implements OnInit, OnDestroy {
 
-  // Listas y Pestañas
   recibidas: SolicitudResumen[] = [];
-  enviadas: SolicitudResumen[] = [];
-  currentTab: 'recibidas' | 'enviadas' = 'recibidas';
-  
-  // Estados Generales
   isLoading = true;
   error: string | null = null;
   currentUser: any = null;
+  private authSubscription!: Subscription; 
   isProcessingAction = false;
   selectedProposalForAction: SolicitudResumen | null = null;
   notificationMessage: string | null = null;
   notificationType: 'success' | 'error' = 'success';
 
-  // Estados para Modales de Código
+  // Modales
   showGenerateCodeModal = false;
   generatedCodeData: { codigo: string, expira_en: string } | null = null;
   isGeneratingCode = false;
-  showCompleteModal = false;
-  exchangeToComplete: SolicitudResumen | null = null;
-  completionCode: string = '';
-  isCompleting = false;
-  completionError: string | null = null;
-
-  // --- 👇 NUEVO: Estados para Modal de Calificación 👇 ---
+  
   showRatingModal = false;
   exchangeToRate: SolicitudResumen | null = null;
-  ratingData = { puntuacion: 3, comentario: '' }; // Inicia en 3 estrellas
+  ratingData = { puntuacion: 3, comentario: '' };
   isSubmittingRating = false;
   ratingError: string | null = null;
-  // Set para guardar los IDs de intercambios que YA califiqué
   ratedIntercambioIds = new Set<number>();
-  // --- -------------------------------------------- ---
+  
+  showProposePlaceModal = false;
+  exchangeToProposePlace: SolicitudResumen | null = null;
+  placeData = { lugar: '', fecha: '' };
+  isProposingPlace = false;
+  proposePlaceError: string | null = null;
 
   constructor(
     private apiService: ApiService,
@@ -71,106 +72,187 @@ export class ReceivedProposalsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.currentUser = this.authService.getUser();
-    if (this.currentUser && this.currentUser.id) {
-      this.loadProposals(this.currentUser.id);
-    } else {
-      this.error = "No se pudo identificar al usuario.";
-      this.isLoading = false;
+    this.authSubscription = this.authService.currentUser$.subscribe((user: any) => {
+      this.currentUser = user;
+      if (user && user.id) {
+        this.loadProposals(user.id);
+      } else {
+        this.error = "No se pudo identificar al usuario. Por favor, inicia sesión.";
+        this.isLoading = false;
+        this.recibidas = [];
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
     }
   }
 
+  // --- 👇 FUNCIÓN loadProposals (VERSIÓN ROBUSTA) ---
   loadProposals(userId: number): void {
-    this.isLoading = true; this.error = null;
+    this.isLoading = true; 
+    this.error = null;
     
-    forkJoin({
-      recibidas: this.apiService.getReceivedProposals(userId),
-      enviadas: this.apiService.getSentProposals(userId)
-    }).subscribe({
-      next: ({ recibidas, enviadas }) => {
-        this.recibidas = recibidas || [];
-        this.enviadas = enviadas || [];
+    this.apiService.getReceivedProposals(userId).subscribe({
+      next: (recibidas: SolicitudResumen[]) => {
         
-        // --- 👇 NUEVA LLAMADA: Verifica el estado de calificación ---
-        this.checkRatingStatus([...this.recibidas, ...this.enviadas]);
+        // 1. Carga la lista base
+        this.recibidas = (recibidas || []).map(p => ({
+            ...p,
+            propuesta_estado: null // Empezamos en null
+        }));
+        this.isLoading = false; 
+
+        // 2. Filtra TODAS las que están 'Aceptadas' para verificar su estado real
+        const acceptedProposals = this.recibidas.filter(p => p.estado === 'Aceptada');
         
-        this.isLoading = false;
+        if (acceptedProposals.length > 0) {
+          // 3. Prepara una llamada a la API para cada una
+          const statusChecks$: Observable<any>[] = acceptedProposals.map(proposal =>
+            this.apiService.getMeetingProposal(proposal.intercambio_id!)
+              .pipe(
+                map(liveProposal => ({
+                  solicitudId: proposal.id_solicitud,
+                  liveData: liveProposal 
+                })),
+                catchError(() => of({ solicitudId: proposal.id_solicitud, liveData: null }))
+              )
+          );
+  
+          // 4. Ejecuta todas las llamadas
+          forkJoin(statusChecks$).subscribe({
+            next: (results) => {
+              // 5. Actualiza la lista 'recibidas' con los datos en vivo
+              results.forEach(result => {
+                const proposalToUpdate = this.recibidas.find(p => p.id_solicitud === result.solicitudId);
+                
+                if (proposalToUpdate && result.liveData && result.liveData.estado) {
+                  // Guardamos el estado real (PENDIENTE, ACEPTADA, RECHAZADA)
+                  proposalToUpdate.propuesta_estado = result.liveData.estado.toUpperCase(); 
+                  
+                  // Actualizamos el lugar/fecha (por si estaba "A coordinar")
+                  proposalToUpdate.lugar_intercambio = result.liveData.direccion;
+                  proposalToUpdate.fecha_intercambio_pactada = result.liveData.fecha;
+                }
+              });
+            }
+          });
+        }
+        
+        // 6. Cargar estados de calificación
+        this.checkRatingStatus(this.recibidas);
       },
       error: (err: any) => {
-        this.error = "Error al cargar propuestas."; 
+        this.error = "Error al cargar propuestas recibidas.";
         this.isLoading = false;
       }
     });
   }
 
-  /**
-   * NUEVO: Revisa una lista de propuestas y consulta
-   * cuáles ya han sido calificadas por el usuario actual.
-   */
-  checkRatingStatus(allProposals: SolicitudResumen[]): void {
+  checkRatingStatus(proposals: SolicitudResumen[]): void {
     if (!this.currentUser) return;
-    
-    const completedProposals = allProposals.filter(p => p.estado === 'Completado' && p.intercambio_id);
-    if (completedProposals.length === 0) {
-      return; // No hay nada que chequear
-    }
+    const completedProposals = proposals.filter(p => p.estado === 'Completado' && p.intercambio_id);
+    if (completedProposals.length === 0) return;
 
     const ratingChecks$: Observable<{ id: number, rated: boolean }>[] = completedProposals.map(p =>
       this.apiService.getMyRatingForExchange(p.intercambio_id!, this.currentUser.id).pipe(
         map((ratingResult: any) => ({
           id: p.intercambio_id!,
-          rated: !!(ratingResult && ratingResult.puntuacion) // true si ya tiene puntuación
+          rated: !!(ratingResult && ratingResult.puntuacion)
         }))
       )
     );
 
     forkJoin(ratingChecks$).subscribe({
-      next: (results) => {
-        // Limpia el Set y añade solo los que ya están calificados
+      next: (results: any) => {
         this.ratedIntercambioIds.clear();
-        results.forEach(r => {
-          if (r.rated) {
-            this.ratedIntercambioIds.add(r.id);
-          }
+        results.forEach((r: any) => {
+          if (r.rated) this.ratedIntercambioIds.add(r.id);
         });
       },
-      error: (err) => console.error("Error al verificar calificaciones", err) // No bloquea la UI
+      error: (err: any) => console.error("Error al verificar calificaciones", err)
     });
   }
 
-  // --- 👇 NUEVAS FUNCIONES PARA EL MODAL DE CALIFICACIÓN 👇 ---
+  // --- Modal Proponer Lugar (RECEPTOR) ---
+  openProposePlaceModal(proposal: SolicitudResumen): void {
+    if (!proposal.intercambio_id || !this.currentUser) return;
+    this.exchangeToProposePlace = proposal;
+    
+    const localDate = proposal.fecha_intercambio_pactada
+      ? new Date(proposal.fecha_intercambio_pactada).toISOString().slice(0, 16)
+      : '';
+      
+    this.placeData = {
+      lugar: proposal.lugar_intercambio && proposal.lugar_intercambio !== 'A coordinar' ? proposal.lugar_intercambio : '',
+      fecha: localDate
+    };
+    
+    this.proposePlaceError = null;
+    this.isProposingPlace = false;
+    this.showProposePlaceModal = true;
+  }
+
+  closeProposePlaceModal(): void {
+    this.showProposePlaceModal = false;
+    this.exchangeToProposePlace = null;
+  }
+
+  submitProposePlace(): void {
+    if (!this.exchangeToProposePlace || !this.currentUser || !this.placeData.lugar || !this.placeData.fecha) {
+      this.proposePlaceError = "Debes completar el lugar y la fecha.";
+      return;
+    }
+    this.isProposingPlace = true; this.proposePlaceError = null;
+    
+    this.apiService.proponerEncuentro(
+      this.exchangeToProposePlace.intercambio_id!, 
+      this.currentUser.id, // ID del Receptor (yo)
+      this.placeData.lugar,
+      new Date(this.placeData.fecha).toISOString()
+    ).subscribe({
+      next: () => {
+        this.isProposingPlace = false;
+        this.closeProposePlaceModal();
+        this.showNotification('¡Lugar y fecha propuestos!', 'success');
+        this.loadProposals(this.currentUser.id); // Recarga
+      },
+      error: (err: any) => {
+        this.isProposingPlace = false;
+        this.proposePlaceError = err.error?.detail || "Error al proponer el encuentro.";
+      }
+    });
+  }
+
+  // --- Modal de Calificación ---
   openRatingModal(proposal: SolicitudResumen): void {
     if (!this.canRate(proposal)) return;
     this.exchangeToRate = proposal;
     this.ratingData = { puntuacion: 3, comentario: '' };
-    this.ratingError = null;
-    this.isSubmittingRating = false;
+    this.ratingError = null; this.isSubmittingRating = false;
     this.showRatingModal = true;
   }
-
   closeRatingModal(): void {
-    this.showRatingModal = false;
-    this.exchangeToRate = null;
+    this.showRatingModal = false; this.exchangeToRate = null;
   }
-
   submitRating(): void {
     if (!this.exchangeToRate || !this.currentUser || !this.exchangeToRate.intercambio_id) {
-      this.ratingError = "No se pudo identificar el intercambio.";
-      return;
+      this.ratingError = "No se pudo identificar el intercambio."; return;
     }
+    this.isSubmittingRating = true; this.ratingError = null;
     
-    this.isSubmittingRating = true;
-    this.ratingError = null;
-    
-    const { puntuacion, comentario } = this.ratingData;
-    
-    // 👇 Esta llamada (con 4 argumentos) ahora coincidirá con la definición en tu servicio
-    this.apiService.rateExchange(this.exchangeToRate.intercambio_id, this.currentUser.id, puntuacion, comentario).subscribe({
+    this.apiService.rateExchange(
+      this.exchangeToRate.intercambio_id,
+      this.currentUser.id,
+      this.ratingData.puntuacion,
+      this.ratingData.comentario
+    ).subscribe({
       next: () => {
         this.isSubmittingRating = false;
         this.closeRatingModal();
         this.showNotification('¡Calificación enviada con éxito!', 'success');
-        // Marca este ID como "ya calificado" en el Set
         this.ratedIntercambioIds.add(this.exchangeToRate!.intercambio_id!);
       },
       error: (err: any) => {
@@ -180,38 +262,26 @@ export class ReceivedProposalsComponent implements OnInit {
     });
   }
 
-  // --- 👇 NUEVOS HELPERS DE ESTADO 👇 ---
-  isCompleted(proposal: SolicitudResumen): boolean {
-    return proposal.estado === 'Completado';
-  }
-
-  // ¿Puede calificar? (Completado Y AÚN NO calificado)
+  // --- Helpers de Estado (Calificación) ---
+  isCompleted(proposal: SolicitudResumen): boolean { return proposal.estado === 'Completado'; }
   canRate(proposal: SolicitudResumen): boolean {
-    if (!proposal.intercambio_id || proposal.estado !== 'Completado') {
-      return false;
-    }
+    if (!proposal.intercambio_id || proposal.estado !== 'Completado') return false;
     return !this.ratedIntercambioIds.has(proposal.intercambio_id);
   }
-
-  // ¿Ya calificó? (Para mostrar el mensaje "Ya calificado")
   hasRated(proposal: SolicitudResumen): boolean {
-    if (!proposal.intercambio_id || proposal.estado !== 'Completado') {
-      return false;
-    }
+    if (!proposal.intercambio_id || proposal.estado !== 'Completado') return false;
     return this.ratedIntercambioIds.has(proposal.intercambio_id);
   }
 
-  // --- (Funciones existentes: Modales de Código, Aceptar, Rechazar, etc.) ---
-  openGenerateCodeModal(proposal: SolicitudResumen): void { /* ... (sin cambios) ... */
+  // --- Modal Generar Código (Receptor) ---
+  openGenerateCodeModal(proposal: SolicitudResumen): void {
     if (!proposal.intercambio_id || !this.currentUser) return;
-    this.isGeneratingCode = true;
-    this.generatedCodeData = null;
-    this.showGenerateCodeModal = true;
-    this.error = null;
+    this.isGeneratingCode = true; this.generatedCodeData = null;
+    this.showGenerateCodeModal = true; this.error = null;
+    
     this.apiService.generateExchangeCode(proposal.intercambio_id, this.currentUser.id).subscribe({
-      next: (data) => {
-        this.generatedCodeData = data;
-        this.isGeneratingCode = false;
+      next: (data: any) => {
+        this.generatedCodeData = data; this.isGeneratingCode = false;
       },
       error: (err: any) => {
         this.closeGeneratedCodeModal();
@@ -221,108 +291,64 @@ export class ReceivedProposalsComponent implements OnInit {
     });
   }
   closeGeneratedCodeModal(): void { this.showGenerateCodeModal = false; this.generatedCodeData = null; }
-  openCompleteModal(proposal: SolicitudResumen): void { /* ... (sin cambios) ... */
-    if (!proposal.intercambio_id) return;
-    this.exchangeToComplete = proposal;
-    this.completionCode = '';
-    this.completionError = null;
-    this.isCompleting = false;
-    this.showCompleteModal = true;
-  }
-  closeCompleteModal(): void { this.showCompleteModal = false; this.exchangeToComplete = null; }
-  submitCompletionCode(): void { /* ... (sin cambios) ... */
-    if (!this.exchangeToComplete || !this.currentUser || !this.completionCode.trim()) {
-      this.completionError = "Por favor, ingresa el código.";
-      return;
-    }
-    this.isCompleting = true;
-    this.completionError = null;
-    const payload = {
-      user_id: this.currentUser.id,
-      codigo: this.completionCode.trim().toUpperCase()
-    };
-    this.apiService.completeExchangeWithCode(this.exchangeToComplete.intercambio_id!, payload.user_id, payload.codigo).subscribe({
-      next: () => {
-        this.isCompleting = false;
-        this.closeCompleteModal();
-        this.showNotification('¡Intercambio completado con éxito!', 'success');
-        this.loadProposals(this.currentUser.id);
-      },
-      error: (err: any) => {
-        this.isCompleting = false;
-        this.completionError = err.error?.detail || "Error al completar. Verifica el código.";
-      }
-    });
-  }
-  getCounterpartyName(proposal: SolicitudResumen, tab: 'recibidas' | 'enviadas'): string { /* ... (sin cambios) ... */
-    return (tab === 'recibidas' ? proposal.solicitante?.nombre_usuario : proposal.receptor?.nombre_usuario) || 'Usuario';
-  }
-  cancelProposal(proposal: SolicitudResumen): void { /* ... (sin cambios) ... */
-     if (!this.currentUser || !this.isPending(proposal)) return;
-     if (!confirm(`¿Seguro que quieres cancelar tu propuesta por "${proposal.libro_deseado?.titulo || 'este libro'}"?`)) { return; }
-     this.selectedProposalForAction = proposal; this.isProcessingAction = true;
-     this.error = null; this.clearNotification();
-     this.apiService.cancelProposal(proposal.id_solicitud, this.currentUser.id).subscribe({ 
-       next: () => {
-         this.showNotification('Propuesta cancelada.', 'success');
-         this.loadProposals(this.currentUser.id);
-         this.isProcessingAction = false; this.selectedProposalForAction = null;
-       },
-       error: (err: any) => {
-         this.showNotification(err.error?.detail || "Error al cancelar la propuesta.", 'error');
-         this.isProcessingAction = false; this.selectedProposalForAction = null;
-       }
-     });
-  }
-  canAcceptSingleOffer(proposal: SolicitudResumen): boolean { /* ... (sin cambios) ... */
-    return proposal.estado === 'Pendiente' && !!proposal.ofertas && proposal.ofertas.length === 1;
-  }
-  isPending(proposal: SolicitudResumen): boolean { /* ... (sin cambios) ... */
-    return proposal.estado === 'Pendiente';
-  }
-  acceptSingleOffer(proposal: SolicitudResumen): void { /* ... (sin cambios) ... */
+
+  // --- Acciones (Aceptar, Rechazar) ---
+  acceptSingleOffer(proposal: SolicitudResumen): void {
     if (!this.currentUser || !this.canAcceptSingleOffer(proposal)) return;
     this.selectedProposalForAction = proposal; this.isProcessingAction = true;
     this.error = null; this.clearNotification();
     const acceptedBookId = proposal.ofertas![0].libro_ofrecido.id_libro;
     
-    this.apiService.acceptProposal(proposal.id_solicitud, acceptedBookId, this.currentUser.id).subscribe({ 
+    this.apiService.acceptProposal(proposal.id_solicitud, acceptedBookId, this.currentUser.id).subscribe({
       next: (response: any) => {
         this.showNotification('¡Propuesta aceptada! El chat ha sido habilitado.', 'success');
         this.loadProposals(this.currentUser.id);
         this.isProcessingAction = false; this.selectedProposalForAction = null;
       },
       error: (err: any) => {
-        this.showNotification(err.error?.detail || "Error al aceptar la propuesta.", 'error');
+        this.showNotification(err.error?.detail || "Error al aceptar.", 'error');
         this.isProcessingAction = false; this.selectedProposalForAction = null;
       }
     });
   }
-  reject(proposal: SolicitudResumen): void { /* ... (sin cambios) ... */
+
+  reject(proposal: SolicitudResumen): void {
      if (!this.currentUser || !this.isPending(proposal)) return;
-     if (!confirm(`¿Seguro que quieres rechazar la propuesta por "${proposal.libro_deseado?.titulo || 'este libro'}"?`)) { return; }
+     if (!confirm(`¿Seguro que quieres rechazar esta propuesta?`)) { return; }
      this.selectedProposalForAction = proposal; this.isProcessingAction = true;
      this.error = null; this.clearNotification();
-     this.apiService.rejectProposal(proposal.id_solicitud, this.currentUser.id).subscribe({ 
+     
+     this.apiService.rejectProposal(proposal.id_solicitud, this.currentUser.id).subscribe({
        next: () => {
          this.showNotification('Propuesta rechazada.', 'success');
          this.loadProposals(this.currentUser.id);
          this.isProcessingAction = false; this.selectedProposalForAction = null;
        },
        error: (err: any) => {
-         this.showNotification(err.error?.detail || "Error al rechazar la propuesta.", 'error');
+         this.showNotification(err.error?.detail || "Error al rechazar.", 'error');
          this.isProcessingAction = false; this.selectedProposalForAction = null;
        }
      });
   }
+
+  // --- Helpers ---
   goToDetail(solicitudId: number): void { this.router.navigate(['/propuestas', solicitudId]); }
   getOfferCount(proposal: SolicitudResumen): number { return proposal.ofertas?.length || 0; }
-  getStatusColor(status: string): string { /* ... (sin cambios) ... */
+  getCounterpartyName(proposal: SolicitudResumen): string {
+    return proposal.solicitante?.nombre_usuario || 'Usuario';
+  }
+  canAcceptSingleOffer(proposal: SolicitudResumen): boolean {
+    return proposal.estado === 'Pendiente' && !!proposal.ofertas && proposal.ofertas.length === 1;
+  }
+  isPending(proposal: SolicitudResumen): boolean {
+    return proposal.estado === 'Pendiente';
+  }
+  getStatusColor(status: string): string {
     const s = (status || '').toLowerCase();
     if (s === 'pendiente') return 'warning'; if (s === 'aceptada') return 'primary';
     if (s === 'rechazada' || s === 'cancelada') return 'danger'; return 'medium';
   }
-  showNotification(message: string, type: 'success' | 'error'): void { /* ... (sin cambios) ... */
+  showNotification(message: string, type: 'success' | 'error'): void {
     this.notificationMessage = message; this.notificationType = type;
     setTimeout(() => this.clearNotification(), 4000);
   }

@@ -1,0 +1,98 @@
+<div class="admin-management-container">
+  <div class="admin-header">
+    <h1>Gestionar Usuarios</h1>
+    <a routerLink="/admin" class="btn-back">Volver al Dashboard</a>
+  </div>
+  
+  <div *ngIf="isLoading" class="admin-message">Cargando usuarios...</div>
+  <div *ngIf="error" class="admin-message error">{{ error }}</div>
+  
+  <div *ngIf="!isLoading && !error" class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Nombres</th>
+          <th>Activo</th>
+          <th>Verificado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id_usuario }}</td>
+          <td>{{ user.nombre_usuario }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.nombres }} {{ user.apellido_paterno }}</td>
+          <td>
+            <span class="status-chip" [class.active]="user.activo">
+              {{ user.activo ? 'Sí' : 'No' }}
+            </span>
+          </td>
+          <td>
+            <span class="status-chip" [class.verified]="user.verificado">
+              {{ user.verificado ? 'Sí' : 'No' }}
+            </span>
+          </td>
+          
+          <td class="actions-cell">
+            
+            <button 
+              *ngIf="user.activo"
+              class="btn-action btn-disable" 
+              (click)="promptToggleUserActive(user)"
+              [disabled]="user.isToggling || user.isDeleting">
+              {{ user.isToggling ? '...' : 'Deshabilitar' }}
+            </button>
+            <button 
+              *ngIf="!user.activo"
+              class="btn-action btn-enable" 
+              (click)="promptToggleUserActive(user)"
+              [disabled]="user.isToggling || user.isDeleting">
+              {{ user.isToggling ? '...' : 'Habilitar' }}
+            </button>
+
+            <button 
+              class="btn-action btn-delete" 
+              (click)="promptDeleteUser(user)" 
+              [disabled]="user.isToggling || user.isDeleting">
+              {{ user.isDeleting ? '...' : 'Eliminar' }}
+            </button>
+
+          </td>
+        </tr>
+        <tr *ngIf="users.length === 0">
+          <td colspan="7">No se encontraron usuarios.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<app-notification
+  *ngIf="notificationMessage"
+  [message]="notificationMessage"
+  [type]="notificationType"
+  (close)="clearNotification()">
+</app-notification>
+
+<div class="modal-overlay" *ngIf="showConfirmationModal">
+  <div class="modal-content confirmation-modal">
+    <h3>{{ confirmationTitle }}</h3>
+    <p>{{ confirmationMessage }}</p>
+    
+    <div class="modal-error">
+      </div>
+    
+    <div class="modal-actions">
+      <button class="btn-action btn-secondary" (click)="onCancelAction()">
+        Cancelar
+      </button>
+      <button class="btn-action btn-delete" (click)="onConfirmAction()">
+        Aceptar
+      </button>
+    </div>
+  </div>
+</div>

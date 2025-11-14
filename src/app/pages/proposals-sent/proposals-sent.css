@@ -1,0 +1,416 @@
+/* ---
+  ESTILOS PARA PROPUESTAS (Enviadas y Recibidas)
+  Usando la paleta de colores de 'styless.css'
+--- */
+
+/* --- Variables Locales (copiadas de tu styless.css) --- */
+:host {
+  --color-primary: #aa9797; 
+  --color-primary-hover: #9a8787;
+  --color-primary-light: #f5f3f3; 
+  --color-background: #ffffff; 
+  --color-panel-bg: #f8f9fa; 
+  --color-text-default: #2c3e50; 
+  --color-text-medium: #555;
+  --color-text-light: #95a5a6; 
+  --color-text-on-primary: #ffffff; 
+  --color-success: #28a745;
+  --color-error: #dc3545;
+  --color-warning: #ffc107;
+  --color-info: #007bff; /* Azul para 'Chat' */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+  --transition-fast: all 0.2s ease-out;
+}
+
+/* --- Contenedor Principal --- */
+.proposals-container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: var(--color-panel-bg); /* Fondo gris claro */
+  border-radius: 12px; /* Bordes redondeados */
+}
+
+.proposals-container h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: var(--color-text-default);
+}
+
+.proposals-container .subtitle {
+  font-size: 1.1rem;
+  color: var(--color-text-medium);
+  margin-bottom: 25px;
+}
+
+/* --- ESTILOS PARA LA LISTA DE PROPUESTAS --- */
+.proposals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* --- INTERACCIÓN: Tarjeta de Propuesta "Lift" --- */
+.proposal-item {
+  display: flex;
+  background: var(--color-background); /* Fondo blanco */
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  padding: 16px;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap; /* Para móvil */
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.proposal-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Icono (Avión de Enviadas) */
+.item-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: var(--color-primary-light); /* Fondo terracota claro */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary); /* Icono terracota */
+}
+.item-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.item-content {
+  flex-grow: 1;
+  min-width: 200px;
+}
+.item-content h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.15rem;
+}
+.item-content .subtitle {
+  font-size: 0.9rem;
+  color: var(--color-text-medium);
+  margin: 0 0 10px 0;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+/* --- Fichas de Estado (Chips) --- */
+.status-chip {
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-weight: 600; /* Más legible */
+  background-color: #eee;
+  color: #333;
+}
+.status-chip.warning { background-color: var(--color-primary-light); color: var(--color-primary-hover); }
+.status-chip.primary { background-color: var(--color-primary); color: var(--color-text-on-primary); }
+.status-chip.danger { background-color: #fdf2f2; color: var(--color-error); }
+.status-chip.medium { background-color: var(--color-panel-bg); color: var(--color-text-medium); }
+
+.offer-count {
+  background-color: var(--color-panel-bg);
+  padding: 4px 10px;
+  border-radius: 15px;
+}
+.date {
+  color: var(--color-text-light);
+  margin-left: auto;
+}
+
+/* Info de Lugar/Fecha Propuesta */
+.place-info {
+  font-size: 0.9rem;
+  color: var(--color-text-default);
+  background-color: var(--color-primary-light);
+  border: 1px solid var(--color-border-light);
+  border-left: 4px solid var(--color-primary); /* Acento terracota */
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-top: 12px;
+}
+.place-info strong {
+  color: var(--color-primary-hover);
+}
+
+.item-actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-left: auto; /* Empuja a la derecha */
+  padding-left: 10px;
+}
+
+.status-info {
+  color: var(--color-text-medium);
+  font-style: italic;
+  font-weight: 500;
+  padding: 8px 12px;
+}
+.status-info.waiting {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+.status-info.rated {
+  color: var(--color-success);
+  font-weight: 600;
+  font-style: normal;
+}
+
+/* --- Botones (Estilo Global) --- */
+.btn {
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: var(--transition-fast);
+  white-space: nowrap;
+}
+.btn:disabled {
+  background-color: #aaa;
+  color: white !important;
+  border-color: #aaa !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.btn:active {
+  transform: scale(0.98); /* Pulsación */
+}
+
+/* Botones específicos de acción */
+.btn-accept {
+  background-color: var(--color-success);
+  color: white;
+}
+.btn-accept:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.btn-reject {
+  background-color: var(--color-error);
+  color: white;
+}
+.btn-reject:hover {
+  background-color: #c82333;
+  transform: translateY(-2px);
+}
+
+.btn-view-details {
+  background-color: var(--color-background);
+  color: var(--color-text-medium);
+  border-color: var(--color-border-light);
+}
+.btn-view-details:hover {
+  background-color: var(--color-panel-bg);
+  border-color: var(--color-text-medium);
+  color: var(--color-text-default);
+}
+
+.btn-chat {
+  background-color: var(--color-info);
+  color: white;
+}
+.btn-chat:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+}
+
+.btn-rate {
+  background-color: var(--color-warning);
+  color: var(--text-dark);
+}
+.btn-rate:hover {
+  background-color: #e0a800;
+  transform: translateY(-2px);
+}
+
+.btn-complete {
+  background-color: var(--color-primary); /* Terracota */
+  color: var(--color-text-on-primary);
+  border-color: var(--color-primary);
+}
+.btn-complete:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+/* --- Mensajes (Cargando, Vacío, Error) --- */
+.message,
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--color-text-medium);
+  background-color: var(--color-background);
+  border-radius: 8px;
+  border: 1px dashed var(--color-border-light);
+}
+.message.error {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border-color: var(--color-error);
+}
+
+/* =====================================
+  ESTILOS PARA LOS MODALES (¡Interactivos!)
+=====================================
+*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: var(--color-background);
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  width: 90%;
+  max-width: 450px;
+  z-index: 1001;
+  border-top: 4px solid var(--color-primary); /* Acento terracota */
+  animation: modalZoomIn 0.3s ease-out;
+}
+
+@keyframes modalZoomIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: var(--color-text-default);
+}
+.modal-content p {
+  font-size: 1rem;
+  color: var(--color-text-medium);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+/* Botones dentro del modal (Estilo global de 'styless.css') */
+.modal-actions .btn-secondary {
+  background-color: var(--color-panel-bg);
+  color: var(--color-text-medium);
+  border-color: var(--color-border-light);
+}
+.modal-actions .btn-secondary:hover {
+  background-color: var(--color-border-light);
+  border-color: var(--color-text-medium);
+  color: var(--color-text-default);
+}
+
+.modal-actions .btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-color: var(--color-primary);
+}
+.modal-actions .btn-primary:hover {
+  background-color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+/* Modal: Formularios (Código, Calificación) */
+.modal-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+.modal-form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin-bottom: 8px;
+}
+.modal-form-group input[type="text"],
+.modal-form-group input[type="datetime-local"],
+.modal-form-group textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  box-sizing: border-box;
+  background-color: var(--color-panel-bg);
+  transition: var(--transition-fast);
+}
+
+.modal-form-group input:focus,
+.modal-form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background-color: var(--color-background);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.modal-error {
+  color: var(--color-error);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+/* Estilos para Calificación (Estrellas) */
+.rating-modal .rating-stars {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+.rating-modal .rating-stars span {
+  font-size: 2.5rem;
+  cursor: pointer;
+  color: var(--color-border-light); /* Estrellas apagadas */
+  transition: transform 0.1s, color 0.1s;
+}
+.rating-modal .rating-stars span:hover {
+  transform: scale(1.2);
+}
+.rating-modal .rating-stars span.selected {
+  color: var(--color-warning); /* Estrellas encendidas (amarillo) */
+}

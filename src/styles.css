@@ -20,10 +20,9 @@
   --color-text-light: #95a5a6;   /* Texto de copyright, etc. */
   --color-text-on-primary: #ffffff; /* Texto sobre botones primarios */
   
-  /* --- Colores de Footer --- */
-  --color-footer-bg: #2c3e50;
-  --color-footer-text: #ecf0f1;
-  --color-footer-border: #aa9797; /* <-- ¡AQUÍ ESTÁ EL COLOR TERRRACOTA! */
+  --color-footer-bg: #aa9797; /* <-- ¡TU NUEVO COLOR DE FONDO! */
+  --color-footer-text: #000000;
+  --color-footer-border: #aa9797;/* <-- ¡AQUÍ ESTÁ EL COLOR TERRRACOTA! */
 
   /* --- Colores de Estado --- */
   --color-success: #28a745;

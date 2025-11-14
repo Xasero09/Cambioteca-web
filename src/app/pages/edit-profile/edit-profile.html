@@ -1,14 +1,43 @@
 <div class="edit-profile-container">
   <h2>Editar Mi Perfil</h2>
-  <p class="subtitle">Actualiza tu información personal.</p>
+  <p class="subtitle">Actualiza tu información personal y foto de perfil.</p>
 
   <div *ngIf="isLoading && !errorMessage" class="message">Cargando tu información...</div>
   
   <div *ngIf="errorMessage && !successMessage && isLoading" class="message error">{{ errorMessage }}</div>
 
   <form *ngIf="!isLoading && !errorMessage && profileForm" [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
-    
-    <div class="form-row">
+
+    <div class="avatar-section">
+      <label>Foto de Perfil</label>
+      <div class="avatar-controls">
+        <img [src]="newAvatarPreview || currentAvatarUrl" alt="Vista previa del avatar" class="avatar-preview">
+        
+        <input 
+          type="file" 
+          accept="image/png, image/jpeg, image/webp"
+          (change)="onFileSelected($event)" 
+          #fileInput>
+        
+        <div class="avatar-buttons">
+          <button type="button" class="btn-change-photo" (click)="fileInput.click()">
+            Seleccionar Foto...
+          </button>
+          
+          <button 
+            type="button" 
+            class="btn-save-photo" 
+            *ngIf="selectedFile" 
+            (click)="onUploadAvatar()"
+            [disabled]="isUploadingAvatar">
+            {{ isUploadingAvatar ? 'Subiendo...' : 'Guardar Foto' }}
+          </button>
+        </div>
+      </div>
+      <div *ngIf="avatarUploadError" class="message error small-error">{{ avatarUploadError }}</div>
+      <div *ngIf="avatarUploadSuccess" class="message success small-success">{{ avatarUploadSuccess }}</div>
+    </div>
+    <hr class="divider"> <div class="form-row">
       <div class="form-group">
         <label for="nombres">Nombres</label>
         <input type="text" id="nombres" formControlName="nombres">
@@ -26,7 +55,7 @@
     </div>
 
     <div class="form-row">
-       <div class="form-group">
+        <div class="form-group">
         <label for="telefono">Teléfono</label>
         <input type="tel" id="telefono" formControlName="telefono">
       </div>
@@ -48,8 +77,8 @@
       <div *ngIf="errorMessage && !isLoading" class="message error">{{ errorMessage }}</div> 
       
       <div class="button-group">
-        <button type="submit" class="btn-save" [disabled]="profileForm.invalid || isLoading">
-          {{ isLoading ? 'Guardando...' : 'Guardar Cambios' }}
+        <button type="submit" class="btn-save" [disabled]="profileForm.invalid || isSavingData">
+          {{ isSavingData ? 'Guardando...' : 'Guardar Cambios' }}
         </button>
         <a routerLink="/perfil" class="btn-cancel">Cancelar</a>
       </div>

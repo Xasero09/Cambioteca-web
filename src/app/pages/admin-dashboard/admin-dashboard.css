@@ -1,0 +1,247 @@
+/* ---
+  ESTILOS PARA EL DASHBOARD DE ADMIN
+  Usando la paleta de colores de 'styless.css'
+--- */
+
+/* --- Variables Locales (de tu styless.css) --- */
+:host {
+  --color-primary: #aa9797; 
+  --color-primary-hover: #9a8787;
+  --color-primary-light: #f5f3f3; 
+  --color-background: #ffffff; 
+  --color-panel-bg: #f8f9fa; 
+  --color-text-default: #2c3e50; 
+  --color-text-medium: #555;
+  --color-text-light: #95a5a6; 
+  --color-text-on-primary: #ffffff; 
+  --color-success: #28a745;
+  --color-success-bg: #d1fae5;
+  --color-error: #dc3545;
+  --color-error-bg: #fee2e2;
+  --color-warning: #ffc107;
+  --color-info: #007bff;
+  --color-info-bg: #e6f2ff;
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+  --transition-fast: all 0.2s ease-out;
+}
+
+/* --- Contenedor Principal --- */
+.admin-dashboard-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--color-text-default);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-default);
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-border-light);
+  padding-bottom: 0.5rem;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem; /* Espacio entre secciones (Gestión, Resumen, Gráfico) */
+}
+
+/* --- Tarjetas de Gestión (Interactivas) --- */
+.management-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.manage-card {
+  display: block;
+  padding: 1.5rem;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+/* --- INTERACCIÓN: "Lift" en Tarjetas de Gestión --- */
+.manage-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+}
+
+.manage-card i {
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  margin-right: 0.75rem;
+  vertical-align: middle;
+}
+
+.manage-card span {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-text-default);
+}
+
+.manage-card p {
+  font-size: 0.9rem;
+  color: var(--color-text-medium);
+  margin: 0.5rem 0 0 2.25rem; /* Alineado con el texto, no con el ícono */
+}
+
+/* Color especial para el Admin de Django */
+.manage-card.django-admin i {
+  color: #0c4b33; /* Color verde de Django */
+}
+.manage-card.django-admin:hover {
+  border-color: #0c4b33;
+}
+
+/* --- Tarjetas de Estadísticas (Estilo "Guapo") --- */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  background: var(--color-background);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+  
+  /* Borde de color sutil a la izquierda */
+  border-left: 5px solid var(--color-primary); 
+}
+
+/* --- INTERACCIÓN: Sombra al pasar el mouse --- */
+.stat-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-text-default);
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--color-text-medium);
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+/* Colores especiales para tarjetas clave */
+.stat-card-success {
+  border-left-color: var(--color-success);
+}
+.stat-card-success .stat-value {
+  color: var(--color-success);
+}
+
+.stat-card-info {
+  border-left-color: var(--color-info);
+}
+.stat-card-info .stat-value {
+  color: var(--color-info);
+}
+
+/* --- Contenedor de Gráfico --- */
+.chart-container {
+  background: var(--color-background);
+  border: 1px solid var(--color-border-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+/* --- Estilo para NGX-Charts (Haciéndolo "Guapo") --- */
+/* Esto es un 'hack' global para asegurar que los estilos de 
+  ngx-charts usen tu paleta de colores.
+  ::ng-deep perfora la encapsulación de estilos de Angular.
+*/
+:host ::ng-deep .ngx-charts {
+  /* ¡Usa la fuente de tu app! */
+  font-family: 'Inter', -apple-system, sans-serif !important; 
+}
+
+:host ::ng-deep .ngx-charts .bar {
+  /* ¡Usa tu color primario para las barras! */
+  fill: var(--color-primary) !important;
+  transition: opacity 0.3s ease;
+}
+
+:host ::ng-deep .ngx-charts .bar:hover {
+  opacity: 0.8;
+}
+
+:host ::ng-deep .ngx-charts .axis-label {
+  /* Estilo de etiquetas de ejes */
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  color: var(--color-text-medium) !important;
+}
+
+:host ::ng-deep .ngx-charts .tick-label {
+  /* Estilo de valores (ej: "Ana K.", "15") */
+  font-size: 12px !important;
+  color: var(--color-text-default) !important;
+}
+
+:host ::ng-deep .ngx-charts .grid-line {
+  stroke: var(--color-border-light) !important; /* Líneas de la cuadrícula */
+}
+
+
+/* --- Estados de Carga / Error --- */
+.admin-message {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--color-text-medium);
+  background-color: var(--color-panel-bg);
+  border-radius: 8px;
+  border: 1px dashed var(--color-border-light);
+}
+.admin-message.error {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border-color: var(--color-error);
+}
+
+/* --- Responsividad --- */
+@media (max-width: 768px) {
+  .admin-dashboard-container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+  h1 {
+    font-size: 1.8rem;
+  }
+  h2 {
+    font-size: 1.25rem;
+  }
+}

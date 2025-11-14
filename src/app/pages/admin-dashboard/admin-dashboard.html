@@ -1,0 +1,62 @@
+<div class="admin-dashboard-container">
+  <h1>Panel de Administrador</h1>
+  
+  <div *ngIf="isLoading" class="admin-message">Cargando estadísticas...</div>
+  <div *ngIf="error" class="admin-message error">{{ error }}</div>
+  
+  <div *ngIf="!isLoading && summaryData" class="dashboard-content">
+    
+    <h2>Gestión del Sitio</h2>
+    <div class="management-grid">
+      <a routerLink="/admin/users" class="manage-card">
+        <i class="fa-solid fa-users"></i> <span>Gestionar Usuarios</span> <p>Ver, editar o eliminar usuarios.</p>
+      </a>
+      <a routerLink="/admin/books" class="manage-card">
+        <i class="fa-solid fa-book"></i> <span>Gestionar Libros</span> <p>Ver o eliminar publicaciones.</p>
+      </a>
+      <a href="https://proyectocapstone-production.up.railway.app/admin/" target="_blank" class="manage-card django-admin">
+        <i class="fa-solid fa-database"></i> <span>Admin de Django</span> <p>Acceso directo a la base de datos.</p>
+      </a>
+    </div>
+
+    <h2>Resumen del Sitio</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-value">{{ summaryData.total_users || 0 }}</span>
+        <span class="stat-label">Usuarios Totales</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ summaryData.new_users_last_7_days || 0 }}</span>
+        <span class="stat-label">Usuarios Nuevos (7 días)</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">{{ summaryData.total_books || 0 }}</span>
+        <span class="stat-label">Libros Publicados</span>
+      </div>
+      <div class="stat-card stat-card-success">
+        <span class="stat-value">{{ summaryData.completed_exchanges || 0 }}</span>
+        <span class="stat-label">Intercambios Completados</span> 
+      </div>
+      <div class="stat-card stat-card-info">
+        <span class="stat-value">{{ summaryData.in_progress_exchanges || 0 }}</span>
+        <span class="stat-label">Intercambios en Progreso</span>
+      </div>
+    </div>
+    
+    <div class="chart-container">
+      <h2>Top 5 Usuarios Activos</h2>
+      <ngx-charts-bar-horizontal
+        [view]="view"
+        [results]="chartDataTopUsers"
+        [gradient]="gradient"
+        [xAxis]="showXAxis"
+        [yAxis]="showYAxis"
+        [showXAxisLabel]="showXAxisLabel"
+        [showYAxisLabel]="showYAxisLabel"
+        [xAxisLabel]="yAxisLabelActivity"
+        [yAxisLabel]="'Usuario'">
+      </ngx-charts-bar-horizontal>
+    </div>
+
+    </div>
+</div>

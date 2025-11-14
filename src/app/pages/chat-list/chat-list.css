@@ -1,94 +1,216 @@
+/* ---
+  ESTILOS PARA LA LISTA DE CHATS
+  Usando la paleta de colores de 'styless.css'
+--- */
+
+/* --- Variables Locales (copiadas de tu styless.css) --- */
+:host {
+  --color-primary: #aa9797; 
+  --color-primary-hover: #9a8787;
+  --color-primary-light: #f5f3f3; 
+  --color-background: #ffffff; 
+  --color-panel-bg: #f8f9fa; 
+  --color-text-default: #2c3e50; 
+  --color-text-medium: #555;
+  --color-text-light: #95a5a6; 
+  --color-text-on-primary: #ffffff; 
+  --color-success: #28a745;
+  --color-error: #dc3545;
+  --color-info: #007bff; /* Azul para 'Chat' */
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+  --transition-fast: all 0.2s ease-out;
+}
+
+/* --- Contenedor Principal --- */
 .chat-list-container {
   max-width: 800px;
-  margin: 40px auto;
+  margin: 30px auto;
   padding: 20px;
+  background-color: var(--color-background); /* Fondo blanco */
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border-light);
 }
 
-h1 {
+.chat-list-container h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: var(--color-text-default);
   text-align: center;
-  margin-bottom: 30px;
 }
 
-.message, .empty-state {
-  text-align: center;
-  padding: 40px;
-  color: #6c757d;
-}
-.message.error {
-  color: #dc3545;
-}
-
+/* --- Lista de Conversaciones --- */
 .conversations {
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espacio entre chats */
 }
 
+/* --- Tarjeta de Conversación (Interactiva) --- */
 .conversation-item {
   display: flex;
   align-items: center;
-  padding: 15px;
-  border-bottom: 1px solid #e9ecef;
+  gap: 15px;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-light);
+  background-color: var(--color-background);
   text-decoration: none;
   color: inherit;
-  transition: background-color 0.2s;
-}
-.conversation-item:last-child {
-  border-bottom: none;
-}
-.conversation-item:hover {
-  background-color: #f8f9fa;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition-fast);
+  cursor: pointer;
 }
 
+/* --- INTERACCIÓN: Hover "Lift" --- */
+.conversation-item:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-sm);
+  background-color: var(--color-panel-bg); /* Fondo gris claro al pasar el mouse */
+  border-color: var(--color-primary-hover);
+}
+
+/* --- INTERACCIÓN: Estado Completado --- */
+.conversation-item.is-completed {
+  opacity: 0.6;
+  background-color: var(--color-panel-bg);
+}
+.conversation-item.is-completed:hover {
+  opacity: 1; /* Se aclara al pasar el mouse */
+  transform: none;
+  box-shadow: none;
+}
+
+/* Avatar */
 .avatar {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  margin-right: 15px;
   object-fit: cover;
-  background-color: #e9ecef; /* Placeholder color */
+  flex-shrink: 0;
+  border: 2px solid var(--color-border-light);
 }
 
+/* Detalles (Nombre, Libros, Último Mensaje) */
 .conv-details {
   flex-grow: 1;
-  overflow: hidden; /* Evita que el texto largo se desborde */
+  min-width: 0; /* Importante para que 'text-overflow' funcione */
 }
 
 .conv-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 5px;
+  align-items: center;
+  margin-bottom: 4px;
 }
 
 .conv-title {
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-default);
 }
 
 .conv-date {
   font-size: 0.8rem;
-  color: #6c757d;
+  color: var(--color-text-light);
+  flex-shrink: 0;
+  margin-left: 10px;
 }
 
-.last-message {
+/* Sección de Libros */
+.conv-books {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-size: 0.9rem;
-  color: #495057;
+  color: var(--color-text-medium);
+  margin-bottom: 6px;
+  font-style: italic;
+}
+
+.exchange-icon {
+  width: 14px;
+  height: 14px;
+  fill: var(--color-text-light);
+  flex-shrink: 0;
+}
+
+.book-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin: 0;
 }
 
+/* Último Mensaje */
+.last-message {
+  font-size: 0.95rem;
+  color: var(--color-text-medium);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.last-message.unread {
+  color: var(--color-text-default); /* Texto más oscuro si no está leído */
+  font-weight: 600;
+}
+
+/* --- INTERACCIÓN: Distintivo "No Leído" (Llamativo) --- */
 .unread-badge {
-  background-color: #007bff;
-  color: white;
-  border-radius: 50%;
-  width: 22px;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: var(--color-primary); /* Tu color terracota */
+  color: var(--color-text-on-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 50px;
+  min-width: 22px;
   height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
-  font-weight: bold;
-  margin-left: 10px;
+  padding: 0 6px;
+  box-shadow: 0 2px 4px rgba(170, 151, 151, 0.5);
+  
+  /* Animación de "pulso" para llamar la atención */
+  animation: pulseBadge 1.5s infinite;
+}
+
+@keyframes pulseBadge {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Si el mensaje no leído está en una conversación completada, 
+   no mostramos el distintivo (ya no importa) */
+.conversation-item.is-completed .unread-badge {
+  display: none;
+}
+
+
+/* --- Estados de Carga y Vacío --- */
+.message,
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--color-text-medium);
+  background-color: var(--color-panel-bg);
+  border-radius: 8px;
+  border: 1px dashed var(--color-border-light);
+}
+.message.error {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border-color: var(--color-error);
+}
+.empty-note {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  margin-top: 10px;
 }

@@ -1,52 +1,62 @@
-import { Component, Input, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Component, HostListener } from '@angular/core';
+import { CommonModule } from '@angular/common'; // 👈 IMPORTADO
+import { RouterLink, Router } from '@angular/router'; // 👈 IMPORTADO
+import { AuthService } from '../../services/auth'; 
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-header',
-  standalone: true,
-  imports: [CommonModule, RouterLink],
-  templateUrl: './header.html',
+  standalone: true, // 👈 SOLUCIÓN AL ERROR NG2012
+  imports: [
+    CommonModule,  // 👈 NECESARIO PARA *ngIf, | async
+    RouterLink     // 👈 NECESARIO PARA routerLink
+  ],
+  templateUrl: './header.html', // 👈 ASEGÚRATE QUE TU HTML SE LLAME ASÍ
   styleUrls: ['./header.css']
 })
 export class HeaderComponent {
-  // Estos @Input y @Output reciben los datos desde app.ts
-  @Input() isAuthenticated$: Observable<boolean> = new Observable();
-  @Input() currentUser$: Observable<any | null> = new Observable();
-  @Output() logout = new EventEmitter<void>();
+  
+  isAuthenticated$: Observable<boolean>;
+  currentUser$: Observable<any>;
+  
+  isUserDropdownOpen = false;
+  isProposalsDropdownOpen = false; // Estado para el nuevo menú
 
-  // --- Lógica para el Dropdown ---
-  isDropdownOpen = false;
-
-  // Inyectamos ElementRef para detectar clics fuera del menú
-  constructor(private elementRef: ElementRef) {}
-
-  /**
-   * Muestra u oculta el menú desplegable.
-   */
-  toggleDropdown(): void {
-    this.isDropdownOpen = !this.isDropdownOpen;
+  constructor(private authService: AuthService, private router: Router) {
+    this.isAuthenticated$ = this.authService.isAuthenticated$;
+    this.currentUser$ = this.authService.currentUser$;
   }
 
-  /**
-   * Cierra el menú al hacer clic en un enlace
-   * y emite el evento de logout.
-   */
-  onLogoutClick(): void {
-    this.isDropdownOpen = false; // Cierra el menú
-    this.logout.emit(); // Emite el evento al app.component
+  // Cierra AMBOS menús si se hace clic en cualquier parte del documento
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.isUserDropdownOpen = false;
+    this.isProposalsDropdownOpen = false;
   }
 
-  /**
-   * Cierra el menú si el usuario hace clic
-   * fuera del área del menú.
-   */
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    // Si el menú está abierto y el clic NO fue dentro de este componente
-    if (this.isDropdownOpen && !this.elementRef.nativeElement.contains(event.target)) {
-      this.isDropdownOpen = false;
-    }
+  // Cierra ambos menús (usado al hacer clic en un enlace del menú)
+  closeAllDropdowns(): void {
+    this.isUserDropdownOpen = false;
+    this.isProposalsDropdownOpen = false;
+  }
+
+  // Alterna el menú de USUARIO
+  toggleUserDropdown(event: Event) {
+    event.stopPropagation(); // Evita que el clic se propague al 'document:click'
+    this.isUserDropdownOpen = !this.isUserDropdownOpen;
+    this.isProposalsDropdownOpen = false; // Cierra el otro menú
+  }
+
+  // Alterna el menú de PROPUESTAS
+  toggleProposalsDropdown(event: Event) {
+    event.stopPropagation(); // Evita que el clic se propague al 'document:click'
+    this.isProposalsDropdownOpen = !this.isProposalsDropdownOpen;
+    this.isUserDropdownOpen = false; // Cierra el otro menú
+  }
+
+  onLogoutClick() {
+    this.closeAllDropdowns(); // Cierra el menú
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
